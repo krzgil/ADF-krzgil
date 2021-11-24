@@ -1,0 +1,261 @@
+{
+	"name": "pl_job_run",
+	"properties": {
+		"activities": [
+			{
+				"name": "run_all_events",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Set var_event_count",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(int(variables('var_event_count')),0)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Check event count in loop",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": "SELECT dbo.fn_get_event_count() as event_count",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "dst_sql_framework",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Set event count",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Check event count in loop",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_event_count",
+								"value": {
+									"value": "@string(activity('Check event count in loop').output.firstRow.event_count)\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Check if events exist",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Set event count",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(int(variables('var_event_count')), 0)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Execute generic pipeline",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "pl_gen_run_pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"job_run_id": {
+													"value": "@variables('job_run_id')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "trigger procedures events",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Check if events exist",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[trigger_event]",
+								"storedProcedureParameters": {
+									"job_run_id": {
+										"value": {
+											"value": "@int(variables('job_run_id'))",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "conn_adfframework",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "trigger files event",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Check if events exist",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[trigger_file_event]",
+								"storedProcedureParameters": {
+									"job_run_id": {
+										"value": {
+											"value": "@int(variables('job_run_id'))",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "conn_adfframework",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Set var_event_count",
+				"description": "",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set job_run_id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "var_event_count",
+					"value": "1"
+				}
+			},
+			{
+				"name": "Start new job",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.03:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "DECLARE @job_run_id int;\nEXEC dbo.init_daily_load @job_run_id OUTPUT;\n\nSELECT @job_run_id as job_run_id",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "dst_sql_framework",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set job_run_id",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Start new job",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "job_run_id",
+					"value": {
+						"value": "@string(activity('Start new job').output.firstRow.job_run_id)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"var_event_count": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"job_run_id": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-11-23T16:21:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,23 @@
+{
+	"name": "dst_sql_framework",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "conn_adfframework",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "job_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "job_name",
+				"type": "varchar"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

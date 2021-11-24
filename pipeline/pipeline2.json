@@ -1,0 +1,30 @@
+{
+	"name": "pipeline2",
+	"properties": {
+		"activities": [
+			{
+				"name": "send event",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
+					"method": "POST",
+					"body": {
+						"test": "123s"
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-11-23T15:07:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

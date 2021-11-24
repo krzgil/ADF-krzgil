@@ -1,0 +1,17 @@
+{
+	"name": "df-sandbox-dev1",
+	"properties": {
+		"globalParameters": {
+			"Param_global_1": {
+				"type": "string",
+				"value": "23"
+			}
+		}
+	},
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "40ce0159-2d3c-4b31-8928-8126d60eec6c",
+		"tenantId": "3d6367c7-8c4b-4978-8602-fd6ca6e66e39"
+	}
+}
