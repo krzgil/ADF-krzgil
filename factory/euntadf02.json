@@ -1,5 +1,13 @@
 {
 	"name": "euntadf02",
+	"properties": {
+		"globalParameters": {
+			"sql_server_name": {
+				"type": "string",
+				"value": "eundadf01.database.windows.net"
+			}
+		}
+	},
 	"location": "uksouth",
 	"identity": {
 		"type": "SystemAssigned",
