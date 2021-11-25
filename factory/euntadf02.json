@@ -4,11 +4,19 @@
 		"globalParameters": {
 			"sql_server_name": {
 				"type": "string",
-				"value": "eundadf01.database.windows.net"
+				"value": "euntadf01.database.windows.net"
 			},
 			"sql_framework_name": {
 				"type": "string",
-				"value": "framework"
+				"value": "test-framework"
+			},
+			"sql_server_password_secret_name": {
+				"type": "string",
+				"value": "frameworkUserPassword"
+			},
+			"key_vault_service_name": {
+				"type": "string",
+				"value": "https://eunt-kv.vault.azure.net/"
 			}
 		}
 	},
