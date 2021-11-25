@@ -2,7 +2,7 @@
 	"name": "df-sandbox-dev1",
 	"properties": {
 		"globalParameters": {
-			"Param_global_1": {
+			"X": {
 				"type": "string",
 				"value": "23"
 			},
