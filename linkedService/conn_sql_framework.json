@@ -2,9 +2,11 @@
 	"name": "conn_sql_framework",
 	"properties": {
 		"parameters": {
+
 			"par_secret_name": {
 				"type": "String"
 			},
+
 			"par_sql_server_name": {
 				"type": "String"
 			},
@@ -15,6 +17,7 @@
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
+
 			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=\"@{concat(linkedService().par_sql_server_name,'.database.windows.net')},\";Initial Catalog=@{linkedService().par_framework_db_name};User ID=cs_admin",
 			"password": {
 				"type": "AzureKeyVaultSecret",
