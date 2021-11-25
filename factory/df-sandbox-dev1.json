@@ -13,6 +13,10 @@
 			"sql_framework_name": {
 				"type": "string",
 				"value": "framework"
+			},
+			"sql_server_password_secret_name": {
+				"type": "string",
+				"value": "frameworkUserPassword"
 			}
 		}
 	},
