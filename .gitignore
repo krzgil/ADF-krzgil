@@ -1,5 +1,6 @@
 ## Ignore ADF linked services
 
 
-conn*.json
+# conn*.json
+
 *.sqlite*
