@@ -17,6 +17,10 @@
 			"sql_server_password_secret_name": {
 				"type": "string",
 				"value": "frameworkUserPassword"
+			},
+			"key_vault_service_name": {
+				"type": "string",
+				"value": "https://eund-kv.vault.azure.net/"
 			}
 		}
 	},
