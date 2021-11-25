@@ -1,0 +1,68 @@
+{
+	"name": "pl_test_unzip",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": false,
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_blob2_zip_file",
+						"type": "DatasetReference",
+						"parameters": {
+							"par_container_name": "container3",
+							"par_folder_name": "test1",
+							"par_file_name": "data1.zip"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_blob1_bin_path",
+						"type": "DatasetReference",
+						"parameters": {
+							"par_container_name": "zip",
+							"par_folder_name": "file_id_105"
+						}
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-10-22T06:52:17Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

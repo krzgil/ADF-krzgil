@@ -1,0 +1,38 @@
+{
+	"name": "ds_blob2_path",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "conn_blob2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"par_container_name": {
+				"type": "string"
+			},
+			"par_folder_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().par_folder_name",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().par_container_name",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

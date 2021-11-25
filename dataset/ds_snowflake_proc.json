@@ -1,0 +1,13 @@
+{
+	"name": "ds_snowflake_proc",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "conn_snowflake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

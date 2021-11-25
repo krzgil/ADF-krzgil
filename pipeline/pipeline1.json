@@ -1,0 +1,40 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:35:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[init_daily_load]",
+					"storedProcedureParameters": {
+						"job_run_id": {
+							"value": null,
+							"type": "Int32"
+						},
+						"truncate_ind": {
+							"value": "0",
+							"type": "Byte"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "conn_sql_framework",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-11-19T07:56:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
