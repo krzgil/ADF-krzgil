@@ -5,6 +5,18 @@
 			"Param_global_1": {
 				"type": "string",
 				"value": "23"
+			},
+			"sql_server_name": {
+				"type": "string",
+				"value": "eundadf01.database.windows.net"
+			},
+			"sql_framework_name": {
+				"type": "string",
+				"value": "framework"
+			},
+			"sql_server_password_secret_name": {
+				"type": "string",
+				"value": "frameworkUserPassword"
 			}
 		}
 	},
