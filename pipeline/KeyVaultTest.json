@@ -1,0 +1,42 @@
+{
+	"name": "KeyVaultTest",
+	"properties": {
+		"activities": [
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "dbo.dummy"
+				},
+				"linkedServiceName": {
+					"referenceName": "conn_sql_framework",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"par_secret_name": {
+							"value": "@pipeline().globalParameters.sql_server_password_secret_name",
+							"type": "Expression"
+						},
+						"par_sql_server_name": {
+							"value": "@pipeline().globalParameters.sql_server_name",
+							"type": "Expression"
+						},
+						"par_framework_db_name": {
+							"value": "@pipeline().globalParameters.sql_framework_name",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
