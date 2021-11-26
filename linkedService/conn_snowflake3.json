@@ -1,5 +1,5 @@
 {
-	"name": "conn_snowflake",
+	"name": "conn_snowflake3",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "connection to snowflake database",
