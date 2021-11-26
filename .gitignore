@@ -3,4 +3,7 @@
 
 # conn*.json
 
+/.vs/*.*
+
 *.sqlite*
+*.suo
