@@ -2,14 +2,14 @@
 	"name": "AzureKeyVault",
 	"properties": {
 		"parameters": {
-			"KeyVaultService": {
+			"par_key_vault_service": {
 				"type": "String"
 			}
 		},
 		"annotations": [],
 		"type": "AzureKeyVault",
 		"typeProperties": {
-			"baseUrl": "@{linkedService().KeyVaultService}"
+			"baseUrl": "@{linkedService().par_key_vault_service}"
 		}
 	}
 }
