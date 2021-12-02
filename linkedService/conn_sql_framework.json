@@ -1,6 +1,7 @@
 {
 	"name": "conn_sql_framework",
 	"properties": {
+		"description": "desc",
 		"parameters": {
 			"par_secret_name": {
 				"type": "String"
