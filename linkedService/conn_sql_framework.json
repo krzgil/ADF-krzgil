@@ -1,5 +1,6 @@
 {
 	"name": "conn_sql_framework",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"parameters": {
 			"par_secret_name": {
@@ -18,25 +19,8 @@
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=\"@{concat(linkedService().par_sql_server_name,'.database.windows.net')},\";Initial Catalog=@{linkedService().par_framework_db_name};User ID=cs_admin",
-			"password": {
-				"type": "AzureKeyVaultSecret",
-				"store": {
-					"referenceName": "AzureKeyVault",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"KeyVaultService": {
-							"value": "@linkedService().KeyVaultService",
-							"type": "Expression"
-						}
-					}
-				},
-				"secretName": {
-					"value": "@{linkedService().par_secret_name}",
-					"type": "Expression"
-				}
-			}
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=@{linkedService().par_sql_server_name};initial catalog=@{linkedService().par_framework_db_name};user id=cs_admin",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEE3QkNCQ0Y4LUE4RkUtNDlDOS1BQjNBLUZEQzIwQjBGMzRGMV8wNTE3M2Y4My01ZGViLTQ5ZWEtOWVhYi1hZjVjZmQxMGQ5MjkiDQp9"
 		}
-	},
-	"type": "Microsoft.DataFactory/factories/linkedservices"
+	}
 }
