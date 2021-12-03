@@ -3,7 +3,43 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "conn_adfframework",
-			"type": "LinkedServiceReference"
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"par_secret_name": {
+					"value": "@dataset().par_secret_name",
+					"type": "Expression"
+				},
+				"par_sql_server_name": {
+					"value": "@dataset().par_sel_server_name",
+					"type": "Expression"
+				},
+				"par_framework_db_name": {
+					"value": "@dataset().par_framework_db_name",
+					"type": "Expression"
+				},
+				"KeyVaultService": {
+					"value": "@dataset().par_key_vault_service",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"par_secret_name": {
+				"type": "string",
+				"defaultValue": "frameworkUserPassword"
+			},
+			"par_sel_server_name": {
+				"type": "string",
+				"defaultValue": "eundadf01.database.windows.net"
+			},
+			"par_framework_db_name": {
+				"type": "string",
+				"defaultValue": "eundadf01-framework"
+			},
+			"par_key_vault_service": {
+				"type": "string",
+				"defaultValue": "https://eund-kv.vault.azure.net/"
+			}
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
