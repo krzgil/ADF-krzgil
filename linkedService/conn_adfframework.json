@@ -37,6 +37,7 @@
 					"value": "@linkedService().par_secret_name",
 					"type": "Expression"
 				}
+			}
 		}
 	}
 }
