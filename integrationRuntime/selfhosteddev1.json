@@ -1,0 +1,6 @@
+{
+	"name": "selfhosteddev1",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
