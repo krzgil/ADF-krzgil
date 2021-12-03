@@ -10,7 +10,7 @@
 				"type": "string",
 				"value": "test-framework"
 			},
-			"sql_server_password_secret_name": {
+			"gpar_kv_sql_server_password": {
 				"type": "string",
 				"value": "frameworkUserPassword"
 			},
