@@ -1,0 +1,7 @@
+{
+	"name": "eundadf01-kv-pep",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.KeyVault/vaults/eund-kv",
+		"groupId": "vault"
+	}
+}

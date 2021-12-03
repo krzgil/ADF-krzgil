@@ -1,32 +1,39 @@
 {
 	"name": "conn_sql_framework",
 	"properties": {
+		"description": "desc",
 		"parameters": {
-
 			"par_secret_name": {
 				"type": "String"
 			},
-
 			"par_sql_server_name": {
 				"type": "String"
 			},
 			"par_framework_db_name": {
+				"type": "String"
+			},
+			"KeyVaultService": {
 				"type": "String"
 			}
 		},
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-
-			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=\"@{concat(linkedService().par_sql_server_name,'.database.windows.net')},\";Initial Catalog=@{linkedService().par_framework_db_name};User ID=cs_admin",
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=@{linkedService().par_sql_server_name};Initial Catalog=@{linkedService().par_framework_db_name};User ID=cs_admin",
 			"password": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
 					"referenceName": "AzureKeyVault",
-					"type": "LinkedServiceReference"
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"KeyVaultService": {
+							"value": "@linkedService().KeyVaultService",
+							"type": "Expression"
+						}
+					}
 				},
 				"secretName": {
-					"value": "@{linkedService().par_secret_name}",
+					"value": "@linkedService().par_secret_name",
 					"type": "Expression"
 				}
 			}

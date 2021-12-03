@@ -2,13 +2,21 @@
 	"name": "euntadf02",
 	"properties": {
 		"globalParameters": {
-			"sql_server_name": {
+			"gpar_sql_server_name": {
 				"type": "string",
-				"value": "eundadf01.database.windows.net"
+				"value": "euntadf01.database.windows.net"
 			},
-			"sql_framework_name": {
+			"gpar_framework_db_name": {
 				"type": "string",
-				"value": "framework"
+				"value": "test-framework"
+			},
+			"gpar_kv_sql_server_password": {
+				"type": "string",
+				"value": "frameworkUserPassword"
+			},
+			"gpar_key_vault_service_name": {
+				"type": "string",
+				"value": "https://eunt-kv.vault.azure.net/"
 			}
 		}
 	},
