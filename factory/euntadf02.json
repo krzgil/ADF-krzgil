@@ -6,7 +6,7 @@
 				"type": "string",
 				"value": "euntadf01.database.windows.net"
 			},
-			"sql_framework_name": {
+			"gpar_framework_db_name": {
 				"type": "string",
 				"value": "test-framework"
 			},
