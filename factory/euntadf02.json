@@ -2,7 +2,7 @@
 	"name": "euntadf02",
 	"properties": {
 		"globalParameters": {
-			"sql_server_name": {
+			"gpar_sql_server_name": {
 				"type": "string",
 				"value": "euntadf01.database.windows.net"
 			},
