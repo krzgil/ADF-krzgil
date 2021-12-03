@@ -1,9 +1,6 @@
 {
 	"name": "conn_adfframework",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
-		"annotations": [],
-		"type": "AzureSqlDatabase",
 		"description": "Linked service description - connection to Azure SQL framework db",
 		"parameters": {
 			"par_secret_name": {
@@ -19,6 +16,8 @@
 				"type": "String"
 			}
 		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
 		"typeProperties": {
 			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=@{linkedService().par_sql_server_name};Initial Catalog=@{linkedService().par_framework_db_name};User ID=cs_admin",
 			"password": {
@@ -27,7 +26,7 @@
 					"referenceName": "AzureKeyVault",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"KeyVaultService": {
+						"par_key_vault_service": {
 							"value": "@linkedService().KeyVaultService",
 							"type": "Expression"
 						}
@@ -39,5 +38,6 @@
 				}
 			}
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
