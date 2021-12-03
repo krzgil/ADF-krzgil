@@ -14,7 +14,7 @@
 				"type": "string",
 				"value": "frameworkUserPassword"
 			},
-			"key_vault_service_name": {
+			"gpar_key_vault_service_name": {
 				"type": "string",
 				"value": "https://eunt-kv.vault.azure.net/"
 			}
