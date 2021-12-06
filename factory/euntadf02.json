@@ -16,7 +16,7 @@
 			},
 			"gpar_key_vault_service_name": {
 				"type": "string",
-				"value": "https://eunt-kv.vault.azure.net/"
+				"value": "https://eund-kv.vault.azure.net/"
 			}
 		}
 	},
