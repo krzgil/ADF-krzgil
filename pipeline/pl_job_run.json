@@ -278,7 +278,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "AzureSqlSource",
-									"sqlReaderQuery": "DECLARE @job_run_id int;\nEXEC dbo.init_daily_load @job_run_id OUTPUT, @job_restart_ind = 0;\n\nSELECT @job_run_id as job_run_id",
+									"sqlReaderQuery": "DECLARE @job_run_id int;\nEXEC dbo.init_daily_load @job_run_id OUTPUT;\n\nSELECT @job_run_id as job_run_id",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
