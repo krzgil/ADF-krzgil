@@ -4,7 +4,7 @@
 		"globalParameters": {
 			"gpar_sql_server_name": {
 				"type": "string",
-				"value": "euntadf01.database.windows.net"
+				"value": "eundadf01.database.windows.net"
 			},
 			"gpar_framework_db_name": {
 				"type": "string",
