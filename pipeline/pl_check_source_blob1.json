@@ -66,6 +66,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"storedProcedureName": "dbo.ups_ins_file_load_detail",
 					"storedProcedureParameters": {
 						"job_run_id": {
 							"value": {
