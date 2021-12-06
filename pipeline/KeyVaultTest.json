@@ -14,11 +14,8 @@
 					"secureInput": false
 				},
 				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "dbo.dummy"
-				},
 				"linkedServiceName": {
-					"referenceName": "conn_sql_framework",
+					"referenceName": "conn_adfframework",
 					"type": "LinkedServiceReference",
 					"parameters": {
 						"par_secret_name": {
