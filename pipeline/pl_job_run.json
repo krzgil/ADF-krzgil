@@ -41,7 +41,25 @@
 								},
 								"dataset": {
 									"referenceName": "dst_sql_framework",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"par_secret_name": {
+											"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+											"type": "Expression"
+										},
+										"par_sel_server_name": {
+											"value": "@pipeline().globalParameters.gpar_sql_server_name",
+											"type": "Expression"
+										},
+										"par_framework_db_name": {
+											"value": "@pipeline().globalParameters.gpar_framework_db_name",
+											"type": "Expression"
+										},
+										"par_key_vault_service": {
+											"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+											"type": "Expression"
+										}
+									}
 								}
 							}
 						},
@@ -138,7 +156,25 @@
 							},
 							"linkedServiceName": {
 								"referenceName": "conn_adfframework",
-								"type": "LinkedServiceReference"
+								"type": "LinkedServiceReference",
+								"parameters": {
+									"par_secret_name": {
+										"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+										"type": "Expression"
+									},
+									"par_sql_server_name": {
+										"value": "@pipeline().globalParameters.gpar_sql_server_name",
+										"type": "Expression"
+									},
+									"par_framework_db_name": {
+										"value": "@pipeline().globalParameters.gpar_framework_db_name",
+										"type": "Expression"
+									},
+									"KeyVaultService": {
+										"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+										"type": "Expression"
+									}
+								}
 							}
 						},
 						{
