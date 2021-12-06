@@ -204,7 +204,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "init job or restart",
+						"activity": "Start new job",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -261,40 +261,57 @@
 								}
 							}
 						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "Start new job",
-							"type": "Lookup",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.03:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
+					]
+				}
+			},
+			{
+				"name": "Start new job",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "init job or restart",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.03:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "DECLARE @job_run_id int;\nEXEC dbo.init_daily_load @job_run_id OUTPUT;\n\nSELECT @job_run_id as job_run_id",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "dst_sql_framework",
+						"type": "DatasetReference",
+						"parameters": {
+							"par_secret_name": {
+								"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+								"type": "Expression"
 							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "AzureSqlSource",
-									"sqlReaderQuery": "DECLARE @job_run_id int;\nEXEC dbo.init_daily_load @job_run_id OUTPUT;\n\nSELECT @job_run_id as job_run_id",
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
-								},
-								"dataset": {
-									"referenceName": "dst_sql_framework",
-									"type": "DatasetReference",
-									"parameters": {
-										"par_secret_name": "frameworkUserPassword",
-										"par_sel_server_name": "eundadf01.database.windows.net",
-										"par_framework_db_name": "eundadf01-framework",
-										"par_key_vault_service": "https://eund-kv.vault.azure.net/"
-									}
-								}
+							"par_sel_server_name": {
+								"value": "@pipeline().globalParameters.gpar_sql_server_name",
+								"type": "Expression"
+							},
+							"par_framework_db_name": {
+								"value": "@pipeline().globalParameters.gpar_framework_db_name",
+								"type": "Expression"
+							},
+							"par_key_vault_service": {
+								"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+								"type": "Expression"
 							}
 						}
-					]
+					}
 				}
 			}
 		],
