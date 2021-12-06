@@ -14,6 +14,9 @@
 					"secureInput": false
 				},
 				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "dbo.dummy"
+				},
 				"linkedServiceName": {
 					"referenceName": "conn_adfframework",
 					"type": "LinkedServiceReference",
