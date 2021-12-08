@@ -5,8 +5,8 @@
 		"annotations": [],
 		"type": "AzureBlobStorage",
 		"typeProperties": {
-			"connectionString": "DefaultEndpointsProtocol=https;AccountName=sandboxirstorage;EndpointSuffix=core.windows.net;",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQENGOUI5ODdFLTBFQ0YtNEEzOS1CMEZCLUE1M0Q1NzY4OUM2Nl8xZDJmMjM3NS1iZTNlLTRkNmItOGRhYS0zMDMwNzU3MGUzZjMiDQp9"
+			"sasUri": "https://sandboxirstorage.blob.core.windows.net",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEE3QkNCQ0Y4LUE4RkUtNDlDOS1BQjNBLUZEQzIwQjBGMzRGMV8wM2FjMWQ0Yi00OTAwLTQ4MGQtODhlOC0wMmUyMzYwNWE1YTYiDQp9"
 		}
 	}
 }
