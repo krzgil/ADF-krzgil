@@ -5,11 +5,11 @@
 		"parameters": {
 			"par_secret_name": {
 				"type": "String",
-				"defaultValue": "freameworkUserPassword"
+				"defaultValue": "frameworkUserPassword"
 			},
 			"par_sql_server_name": {
 				"type": "String",
-				"defaultValue": "sql-iduk-prod-dwh.database.windows.net"
+				"defaultValue": "eundadf01.database.windows.net"
 			},
 			"par_framework_db_name": {
 				"type": "String",
