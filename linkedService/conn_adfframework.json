@@ -16,7 +16,8 @@
 				"defaultValue": "eundadf01-framework"
 			},
 			"KeyVaultService": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "https://eund-kv.vault.azure.net/"
 			}
 		},
 		"annotations": [],
