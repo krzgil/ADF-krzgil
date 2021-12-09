@@ -90,7 +90,7 @@
 				]
 			},
 			{
-				"name": "set JSON",
+				"name": "usp_upd_file_load_download_file",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
