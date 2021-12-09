@@ -95,7 +95,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].usp_upd_file_load_download_file",
 					"storedProcedureParameters": {
 						"file_load_id": {
 							"value": {
@@ -128,7 +127,7 @@
 					}
 				},
 				"linkedServiceName": {
-					"referenceName": "conn_sql_framework",
+					"referenceName": "conn_adfframework",
 					"type": "LinkedServiceReference",
 					"parameters": {
 						"par_secret_name": {
