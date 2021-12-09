@@ -95,6 +95,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"storedProcedureName": "[dbo].usp_upd_file_load_download_file",
 					"storedProcedureParameters": {
 						"file_load_id": {
 							"value": {
