@@ -731,6 +731,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"storedProcedureName": "dbo.usp_upd_pipeline_run",
 								"storedProcedureParameters": {
 									"job_run_id": {
 										"value": {
