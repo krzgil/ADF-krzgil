@@ -96,8 +96,7 @@
 					{
 						"activity": "Download File",
 						"dependencyConditions": [
-							"Succeeded",
-							"Failed"
+							"Completed"
 						]
 					}
 				],
