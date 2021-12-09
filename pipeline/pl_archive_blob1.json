@@ -130,7 +130,7 @@
 					{
 						"activity": "DeleteAFile",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
