@@ -53,7 +53,7 @@
 					{
 						"activity": "get files from source",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],

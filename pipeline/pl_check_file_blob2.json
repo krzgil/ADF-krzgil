@@ -63,7 +63,7 @@
 					{
 						"activity": "check file in source",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],

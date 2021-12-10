@@ -82,7 +82,7 @@
 					{
 						"activity": "Download File",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
