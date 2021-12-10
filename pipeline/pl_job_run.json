@@ -289,7 +289,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@if(equals(pipeline().parameters.par_restart_job, 0)\n, 'DECLARE job_run_id int;\nEXEC dbo.init_daily_load job_restart_ind = 0, job_run_id OUTPUT;'\n, 'DECLARE job_run_id int;\nEXEC dbo.init_daily_load job_restart_ind = 1, job_run_id OUTPUT;'\n)",
+							"value": "@if(equals(pipeline().parameters.par_restart_job, 0)\n, 'DECLARE job_run_id int;\nEXEC dbo.init_daily_load @job_restart_ind = 0, job_run_id OUTPUT;'\n, 'DECLARE job_run_id int;\nEXEC dbo.init_daily_load @job_restart_ind = 1, job_run_id OUTPUT;'\n)",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
