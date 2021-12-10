@@ -132,6 +132,12 @@
 						"dependencyConditions": [
 							"Completed"
 						]
+					},
+					{
+						"activity": "CopyAFile",
+						"dependencyConditions": [
+							"Failed"
+						]
 					}
 				],
 				"policy": {
