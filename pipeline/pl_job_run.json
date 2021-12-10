@@ -258,7 +258,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Start new job",
+						"activity": "Start the job",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -268,67 +268,15 @@
 				"typeProperties": {
 					"variableName": "job_run_id",
 					"value": {
-						"value": "@string(activity('Start new job').output.firstRow.job_run_id)",
+						"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "init job or restart",
-				"type": "IfCondition",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@equals(pipeline().parameters.par_restart_job, 0)",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "Start new job_copy1",
-							"type": "Lookup",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.03:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "AzureSqlSource",
-									"sqlReaderQuery": "DECLARE @job_run_id int;\nEXEC dbo.init_daily_load @job_run_id OUTPUT;\n\nSELECT @job_run_id as job_run_id",
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
-								},
-								"dataset": {
-									"referenceName": "dst_sql_framework",
-									"type": "DatasetReference",
-									"parameters": {
-										"par_secret_name": "frameworkUserPassword",
-										"par_sel_server_name": "eundadf01.database.windows.net",
-										"par_framework_db_name": "eundadf01-framework",
-										"par_key_vault_service": "https://eund-kv.vault.azure.net/"
-									}
-								}
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Start new job",
+				"name": "Start the job",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "init job or restart",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.03:00:00",
 					"retry": 0,
