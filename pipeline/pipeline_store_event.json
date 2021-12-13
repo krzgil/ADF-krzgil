@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Stored procedure1",
+				"name": "save parameter into framework table",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
