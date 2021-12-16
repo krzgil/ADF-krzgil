@@ -50,7 +50,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('DECLARE @event nvarchar(max);SET @event = dbo.get_event('\n,string(pipeline().parameters.event_id)\n,'); SELECT event as event')\n\n",
+							"value": "@concat('DECLARE @event nvarchar(max);SET @event = dbo.get_event('\n,string(pipeline().parameters.event_id)\n,'); SELECT @event as event')\n\n",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
