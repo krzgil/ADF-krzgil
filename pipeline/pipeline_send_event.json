@@ -20,7 +20,13 @@
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
 					},
-					"method": "POST",
+					"method": "GET",
+					"headers": {
+						"event_param": {
+							"value": "@pipeline().parameters.par_event_to_be_sent",
+							"type": "Expression"
+						}
+					},
 					"body": {
 						"value": "@pipeline().parameters.par_event_to_be_sent",
 						"type": "Expression"
