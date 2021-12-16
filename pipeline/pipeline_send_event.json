@@ -22,7 +22,7 @@
 					},
 					"method": "POST",
 					"body": {
-						"test": "1234"
+						"test": "adf105"
 					}
 				}
 			}
