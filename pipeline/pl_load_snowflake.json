@@ -15,11 +15,29 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[dummy]"
+					"storedProcedureName": "dbo.dummy"
 				},
 				"linkedServiceName": {
-					"referenceName": "conn_sql_framework",
-					"type": "LinkedServiceReference"
+					"referenceName": "conn_adfframework",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"par_secret_name": {
+							"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+							"type": "Expression"
+						},
+						"par_sql_server_name": {
+							"value": "@pipeline().globalParameters.gpar_sql_server_name",
+							"type": "Expression"
+						},
+						"par_framework_db_name": {
+							"value": "@pipeline().globalParameters.gpar_framework_db_name",
+							"type": "Expression"
+						},
+						"KeyVaultService": {
+							"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -29,7 +47,7 @@
 					{
 						"activity": "Stored procedure1",
 						"dependencyConditions": [
-							"Succeeded"
+							"Failed"
 						]
 					}
 				],
@@ -42,7 +60,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].usp_upd_file_load_stage_to_snowflake",
+					"storedProcedureName": "dbo.dummy",
 					"storedProcedureParameters": {
 						"file_load_id": {
 							"value": {
@@ -75,8 +93,26 @@
 					}
 				},
 				"linkedServiceName": {
-					"referenceName": "conn_sql_framework",
-					"type": "LinkedServiceReference"
+					"referenceName": "conn_adfframework",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"par_secret_name": {
+							"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+							"type": "Expression"
+						},
+						"par_sql_server_name": {
+							"value": "@pipeline().globalParameters.gpar_sql_server_name",
+							"type": "Expression"
+						},
+						"par_framework_db_name": {
+							"value": "@pipeline().globalParameters.gpar_framework_db_name",
+							"type": "Expression"
+						},
+						"KeyVaultService": {
+							"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],

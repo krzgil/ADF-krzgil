@@ -1,13 +1,13 @@
 {
-	"name": "pipeline1",
+	"name": "pipeline_store_event",
 	"properties": {
 		"activities": [
 			{
-				"name": "Stored procedure1",
+				"name": "save parameter into framework table",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
-					"timeout": "0.00:35:00",
+					"timeout": "7.00:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
@@ -15,15 +15,14 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "dbo.dummy",
+					"storedProcedureName": "dbo.dummy2",
 					"storedProcedureParameters": {
-						"job_run_id": {
-							"value": null,
-							"type": "Int32"
-						},
-						"truncate_ind": {
-							"value": "0",
-							"type": "Byte"
+						"json": {
+							"value": {
+								"value": "@string(pipeline().parameters.par_json)",
+								"type": "Expression"
+							},
+							"type": "String"
 						}
 					}
 				},
@@ -51,8 +50,13 @@
 				}
 			}
 		],
+		"parameters": {
+			"par_json": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
-		"lastPublishTime": "2021-11-19T07:56:19Z"
+		"lastPublishTime": "2021-11-22T15:34:59Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

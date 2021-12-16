@@ -1,0 +1,100 @@
+{
+	"name": "pipeline_send_event_from_queue",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "read event json",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "POST",
+					"body": {
+						"value": "@string(json(activity('read event json').output.firstRow.event))\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "read event json",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('DECLARE @event nvarchar(max);SET @event = dbo.get_event('\n,string(pipeline().parameters.event_id)\n,'); SELECT @event as event')\n\n",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "dst_sql_framework",
+						"type": "DatasetReference",
+						"parameters": {
+							"par_secret_name": {
+								"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+								"type": "Expression"
+							},
+							"par_sel_server_name": {
+								"value": "@pipeline().globalParameters.gpar_sql_server_name",
+								"type": "Expression"
+							},
+							"par_framework_db_name": {
+								"value": "@pipeline().globalParameters.gpar_framework_db_name",
+								"type": "Expression"
+							},
+							"par_key_vault_service": {
+								"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+								"type": "Expression"
+							}
+						}
+					}
+				}
+			}
+		],
+		"concurrency": 1,
+		"parameters": {
+			"event_id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"variables": {
+			"par_event_to_be_sent": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-11-22T17:16:48Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -16,6 +16,10 @@
 				"par_framework_db_name": {
 					"value": "@dataset().par_framework_db_name",
 					"type": "Expression"
+				},
+				"KeyVaultService": {
+					"value": "@dataset().par_key_vault_service",
+					"type": "Expression"
 				}
 			}
 		},
@@ -27,6 +31,9 @@
 				"type": "string"
 			},
 			"par_framework_db_name": {
+				"type": "string"
+			},
+			"par_key_vault_service": {
 				"type": "string"
 			}
 		},

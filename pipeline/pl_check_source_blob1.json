@@ -53,7 +53,7 @@
 					{
 						"activity": "get files from source",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
@@ -66,7 +66,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].usp_ins_file_load_detail ",
+					"storedProcedureName": "dbo.ups_ins_file_load_detail",
 					"storedProcedureParameters": {
 						"job_run_id": {
 							"value": {
@@ -110,8 +110,26 @@
 					}
 				},
 				"linkedServiceName": {
-					"referenceName": "conn_sql_framework",
-					"type": "LinkedServiceReference"
+					"referenceName": "conn_adfframework",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"par_secret_name": {
+							"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+							"type": "Expression"
+						},
+						"par_sql_server_name": {
+							"value": "@pipeline().globalParameters.gpar_sql_server_name",
+							"type": "Expression"
+						},
+						"par_framework_db_name": {
+							"value": "@pipeline().globalParameters.gpar_framework_db_name",
+							"type": "Expression"
+						},
+						"KeyVaultService": {
+							"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],

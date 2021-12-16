@@ -16,13 +16,26 @@
 				"userProperties": [],
 				"typeProperties": {
 					"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
 					"method": "POST",
 					"body": {
-						"test": "1234"
+						"value": "@pipeline().parameters.par_event_to_be_sent",
+						"type": "Expression"
 					}
 				}
 			}
 		],
+		"parameters": {
+			"par_event_to_be_sent": {
+				"type": "string",
+				"defaultValue": {
+					"event": "message"
+				}
+			}
+		},
 		"annotations": [],
 		"lastPublishTime": "2021-11-22T17:16:48Z"
 	},

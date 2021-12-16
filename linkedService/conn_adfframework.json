@@ -4,16 +4,20 @@
 		"description": "Linked service description - connection to Azure SQL framework db",
 		"parameters": {
 			"par_secret_name": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "frameworkUserPassword"
 			},
 			"par_sql_server_name": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "eundadf01.database.windows.net"
 			},
 			"par_framework_db_name": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "eundadf01-framework"
 			},
 			"KeyVaultService": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "https://eund-kv.vault.azure.net/"
 			}
 		},
 		"annotations": [],
