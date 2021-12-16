@@ -22,7 +22,8 @@
 					},
 					"method": "POST",
 					"body": {
-						"test": "adf105"
+						"value": "@pipeline().parameters.par_event_to_be_sent",
+						"type": "Expression"
 					}
 				}
 			}
