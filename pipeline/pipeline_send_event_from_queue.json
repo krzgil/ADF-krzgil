@@ -29,7 +29,7 @@
 					},
 					"method": "POST",
 					"body": {
-						"value": "@string(json(activity('read event json').output.firstRow.event)[0])\n",
+						"value": "@string(json(activity('read event json').output.firstRow.event))\n",
 						"type": "Expression"
 					}
 				}
