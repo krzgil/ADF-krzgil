@@ -28,12 +28,9 @@
 				}
 			}
 		],
-		"parameters": {
+		"variables": {
 			"par_event_to_be_sent": {
-				"type": "string",
-				"defaultValue": {
-					"event": "message"
-				}
+				"type": "String"
 			}
 		},
 		"annotations": [],
