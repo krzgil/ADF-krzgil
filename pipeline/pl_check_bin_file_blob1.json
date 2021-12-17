@@ -1,9 +1,9 @@
 {
-	"name": "pl_check_source_blob2",
+	"name": "pl_check_bin_file_blob1",
 	"properties": {
 		"activities": [
 			{
-				"name": "get files from source",
+				"name": "check file in source",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_blob2_path",
+						"referenceName": "ds_blob1_bin_file",
 						"type": "DatasetReference",
 						"parameters": {
 							"par_container_name": {
@@ -26,23 +26,28 @@
 							"par_folder_name": {
 								"value": "@pipeline().parameters.par_folder_name",
 								"type": "Expression"
+							},
+							"par_file_name": {
+								"value": "@pipeline().parameters.par_file_name",
+								"type": "Expression"
 							}
 						}
 					},
 					"fieldList": [
+						"contentMD5",
+						"exists",
 						"itemName",
 						"itemType",
-						"childItems",
-						"exists",
-						"lastModified"
+						"lastModified",
+						"size"
 					],
 					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
+						"type": "AzureBlobStorageReadSettings",
 						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
-						"type": "DelimitedTextReadSettings"
+						"type": "BinaryReadSettings"
 					}
 				}
 			},
@@ -51,7 +56,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "get files from source",
+						"activity": "check file in source",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -66,51 +71,40 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "dbo.usp_ins_file_load_detail",
+					"storedProcedureName": "[dbo].usp_upd_file_load_check_bin_file",
 					"storedProcedureParameters": {
+						"file_load_id": {
+							"value": {
+								"value": "@string(pipeline().parameters.par_file_load_id)",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
 						"job_run_id": {
 							"value": {
-								"value": "@pipeline().parameters.par_job_run_id",
+								"value": "@string(pipeline().parameters.par_job_run_id)",
 								"type": "Expression"
 							},
 							"type": "Int32"
 						},
 						"json_parameter": {
 							"value": {
-								"value": "@string(activity('get files from source').output)",
+								"value": "@string(activity('check file in source').output)",
 								"type": "Expression"
 							},
 							"type": "String"
-						},
-						"parent_file_load_id": {
-							"value": {
-								"value": "@pipeline().parameters.par_file_load_id",
-								"type": "Expression"
-							},
-							"type": "Int32"
 						},
 						"pipeline_run_id": {
 							"value": {
-								"value": "@pipeline().parameters.par_pipeline_run_id",
+								"value": "@string(pipeline().parameters.par_pipeline_run_id)",
 								"type": "Expression"
 							},
 							"type": "Int32"
-						},
-						"source_cd": {
-							"value": "blob2",
-							"type": "String"
-						},
-						"source_file_path": {
-							"value": {
-								"value": "@string(concat(pipeline().parameters.par_container_name, '/',pipeline().parameters.par_folder_name))",
-								"type": "Expression"
-							},
-							"type": "String"
 						}
 					}
 				},
 				"linkedServiceName": {
-					"referenceName": "conn_adfframework",
+					"referenceName": "conn_sql_framework",
 					"type": "LinkedServiceReference",
 					"parameters": {
 						"par_secret_name": {
@@ -146,12 +140,15 @@
 			"par_pipeline_run_id": {
 				"type": "int"
 			},
+			"par_file_name": {
+				"type": "string"
+			},
 			"par_file_load_id": {
-				"type": "int"
+				"type": "string"
 			}
 		},
 		"annotations": [],
-		"lastPublishTime": "2021-11-18T11:14:51Z"
+		"lastPublishTime": "2021-10-22T10:43:51Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
