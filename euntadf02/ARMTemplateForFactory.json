@@ -974,6 +974,191 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob1_bin_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_adfstore01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob1_bin_path')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_adfstore01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob1_csv_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_adfstore01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					},
+					"par_delimiter": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": {
+						"value": "@dataset().par_delimiter",
+						"type": "Expression"
+					},
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob1_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_adfstore01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": "\u0001",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": ""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_blob1_path')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1016,6 +1201,239 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob1_zip_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_adfstore01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"compression": {
+						"type": "ZipDeflate",
+						"level": "Optimal"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_bin_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_blob2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_bin_path')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_blob2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_csv_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					},
+					"par_delimiter": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": {
+						"value": "@dataset().par_delimiter",
+						"type": "Expression"
+					},
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_blob2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_blob2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_blob2_path')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1052,6 +1470,54 @@
 					"quoteChar": "\""
 				},
 				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_blob2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_zip_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"compression": {
+						"type": "ZipDeflate",
+						"level": "Optimal"
+					}
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/conn_blob2')]"

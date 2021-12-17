@@ -33,6 +33,571 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob1_zip_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_adfstore01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"compression": {
+						"type": "ZipDeflate",
+						"level": "Optimal"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_bin_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_bin_path')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_csv_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					},
+					"par_delimiter": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": {
+						"value": "@dataset().par_delimiter",
+						"type": "Expression"
+					},
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_path')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_blob2_zip_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_blob2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"compression": {
+						"type": "ZipDeflate",
+						"level": "Optimal"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_snowflake_proc')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_snowflake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SnowflakeTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_snowflake_table')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_snowflake",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_schema_name": {
+						"type": "string"
+					},
+					"par_table_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "SnowflakeTable",
+				"schema": [
+					{
+						"name": "Data_Source_Type_Key",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Market_Date",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "NAV_Date",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Fund_Class_Code",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Fund_Class_Name",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "ISIN",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Nav_Per_Share",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Nav_Per_Share_With_Div_Reinvested",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Modified_GAV",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "BMK",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "AUM_At_Class_Level",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "FILE_ID",
+						"type": "NUMBER",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "LineNo",
+						"type": "NUMBER",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "CDC_DATE_KEY",
+						"type": "NUMBER",
+						"precision": 38,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().par_schema_name",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().par_table_name",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_snowflake_table_par')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_snowflake2",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"par_account_name": "ja91996.west-europe.azure.snowflakecomputing.com",
+						"par_user_name": "krzysztof_gil"
+					}
+				},
+				"parameters": {
+					"par_schema_name": {
+						"type": "string"
+					},
+					"par_table_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "SnowflakeTable",
+				"schema": [
+					{
+						"name": "Data_Source_Type_Key",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Market_Date",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "NAV_Date",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Fund_Class_Code",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Fund_Class_Name",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "ISIN",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Nav_Per_Share",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Nav_Per_Share_With_Div_Reinvested",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "Modified_GAV",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "BMK",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "AUM_At_Class_Level",
+						"type": "VARCHAR",
+						"precision": 244,
+						"scale": 0
+					},
+					{
+						"name": "FILE_ID",
+						"type": "NUMBER",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "LineNo",
+						"type": "NUMBER",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "CDC_DATE_KEY",
+						"type": "NUMBER",
+						"precision": 38,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().par_schema_name",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().par_table_name",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_stage_file')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -454,510 +1019,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_check_source_blob1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "get files from source",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "ds_blob1_path",
-								"type": "DatasetReference",
-								"parameters": {
-									"par_container_name": {
-										"value": "@pipeline().parameters.par_container_name",
-										"type": "Expression"
-									},
-									"par_folder_name": {
-										"value": "@pipeline().parameters.par_folder_name",
-										"type": "Expression"
-									}
-								}
-							},
-							"fieldList": [
-								"itemName",
-								"itemType",
-								"childItems",
-								"exists",
-								"lastModified"
-							],
-							"storeSettings": {
-								"type": "AzureBlobStorageReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
-							}
-						}
-					},
-					{
-						"name": "set JSON",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "get files from source",
-								"dependencyConditions": [
-									"Completed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "dbo.ups_ins_file_load_detail",
-							"storedProcedureParameters": {
-								"job_run_id": {
-									"value": {
-										"value": "@pipeline().parameters.par_job_run_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"json_parameter": {
-									"value": {
-										"value": "@string(activity('get files from source').output)",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"parent_file_load_id": {
-									"value": {
-										"value": "@pipeline().parameters.par_file_load_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"pipeline_run_id": {
-									"value": {
-										"value": "@pipeline().parameters.par_pipeline_run_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"source_cd": {
-									"value": "blob1",
-									"type": "String"
-								},
-								"source_file_path": {
-									"value": {
-										"value": "@string(concat(pipeline().parameters.par_container_name, '/',pipeline().parameters.par_folder_name))",
-										"type": "Expression"
-									},
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "conn_adfframework",
-							"type": "LinkedServiceReference",
-							"parameters": {
-								"par_secret_name": {
-									"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
-									"type": "Expression"
-								},
-								"par_sql_server_name": {
-									"value": "@pipeline().globalParameters.gpar_sql_server_name",
-									"type": "Expression"
-								},
-								"par_framework_db_name": {
-									"value": "@pipeline().globalParameters.gpar_framework_db_name",
-									"type": "Expression"
-								},
-								"KeyVaultService": {
-									"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"par_container_name": {
-						"type": "string"
-					},
-					"par_folder_name": {
-						"type": "string"
-					},
-					"par_job_run_id": {
-						"type": "int"
-					},
-					"par_pipeline_run_id": {
-						"type": "int"
-					},
-					"par_file_load_id": {
-						"type": "int"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-11-18T11:14:51Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_check_source_blob2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "get files from source",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "ds_blob2_path",
-								"type": "DatasetReference",
-								"parameters": {
-									"par_container_name": {
-										"value": "@pipeline().parameters.par_container_name",
-										"type": "Expression"
-									},
-									"par_folder_name": {
-										"value": "@pipeline().parameters.par_folder_name",
-										"type": "Expression"
-									}
-								}
-							},
-							"fieldList": [
-								"itemName",
-								"itemType",
-								"childItems",
-								"exists",
-								"lastModified"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
-							}
-						}
-					},
-					{
-						"name": "set JSON",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "get files from source",
-								"dependencyConditions": [
-									"Completed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "dbo.usp_ins_file_load_detail",
-							"storedProcedureParameters": {
-								"job_run_id": {
-									"value": {
-										"value": "@pipeline().parameters.par_job_run_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"json_parameter": {
-									"value": {
-										"value": "@string(activity('get files from source').output)",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"parent_file_load_id": {
-									"value": {
-										"value": "@pipeline().parameters.par_file_load_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"pipeline_run_id": {
-									"value": {
-										"value": "@pipeline().parameters.par_pipeline_run_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"source_cd": {
-									"value": "blob2",
-									"type": "String"
-								},
-								"source_file_path": {
-									"value": {
-										"value": "@string(concat(pipeline().parameters.par_container_name, '/',pipeline().parameters.par_folder_name))",
-										"type": "Expression"
-									},
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "conn_adfframework",
-							"type": "LinkedServiceReference",
-							"parameters": {
-								"par_secret_name": {
-									"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
-									"type": "Expression"
-								},
-								"par_sql_server_name": {
-									"value": "@pipeline().globalParameters.gpar_sql_server_name",
-									"type": "Expression"
-								},
-								"par_framework_db_name": {
-									"value": "@pipeline().globalParameters.gpar_framework_db_name",
-									"type": "Expression"
-								},
-								"KeyVaultService": {
-									"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"par_container_name": {
-						"type": "string"
-					},
-					"par_folder_name": {
-						"type": "string"
-					},
-					"par_job_run_id": {
-						"type": "int"
-					},
-					"par_pipeline_run_id": {
-						"type": "int"
-					},
-					"par_file_load_id": {
-						"type": "int"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-11-18T11:14:51Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dst_sql_framework')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "conn_adfframework",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"par_secret_name": {
-							"value": "@dataset().par_secret_name",
-							"type": "Expression"
-						},
-						"par_sql_server_name": {
-							"value": "@dataset().par_sel_server_name",
-							"type": "Expression"
-						},
-						"par_framework_db_name": {
-							"value": "@dataset().par_framework_db_name",
-							"type": "Expression"
-						},
-						"KeyVaultService": {
-							"value": "@dataset().par_key_vault_service",
-							"type": "Expression"
-						}
-					}
-				},
-				"parameters": {
-					"par_secret_name": {
-						"type": "string",
-						"defaultValue": "frameworkUserPassword"
-					},
-					"par_sel_server_name": {
-						"type": "string",
-						"defaultValue": "eundadf01.database.windows.net"
-					},
-					"par_framework_db_name": {
-						"type": "string",
-						"defaultValue": "eundadf01-framework"
-					},
-					"par_key_vault_service": {
-						"type": "string",
-						"defaultValue": "https://eund-kv.vault.azure.net/"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "job_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "job_name",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline_send_event_from_queue')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Web1",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "read event json",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
-							"connectVia": {
-								"referenceName": "AutoResolveIntegrationRuntime",
-								"type": "IntegrationRuntimeReference"
-							},
-							"method": "POST",
-							"headers": {},
-							"body": {
-								"value": "@string(json(activity('read event json').output.firstRow.event))\n",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "read event json",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('DECLARE @event nvarchar(max);SET @event = dbo.get_event('\n,string(pipeline().parameters.event_id)\n,'); SELECT @event as event')\n\n",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "dst_sql_framework",
-								"type": "DatasetReference",
-								"parameters": {
-									"par_secret_name": {
-										"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
-										"type": "Expression"
-									},
-									"par_sel_server_name": {
-										"value": "@pipeline().globalParameters.gpar_sql_server_name",
-										"type": "Expression"
-									},
-									"par_framework_db_name": {
-										"value": "@pipeline().globalParameters.gpar_framework_db_name",
-										"type": "Expression"
-									},
-									"par_key_vault_service": {
-										"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
-										"type": "Expression"
-									}
-								}
-							}
-						}
-					}
-				],
-				"concurrency": 1,
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"event_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"variables": {
-					"par_event_to_be_sent": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-11-22T17:16:48Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
-				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]"
 			]
 		}
 	]
