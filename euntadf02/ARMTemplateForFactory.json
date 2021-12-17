@@ -1937,6 +1937,50 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_archive_bin_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_adfstore01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_archive_file')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2800,6 +2844,98 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/conn_snowflake2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_stage_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_adfstore01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					},
+					"par_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().par_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": "\u0001",
+					"encodingName": "UTF-8",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": ""
+				},
+				"schema": [
+					{
+						"name": "\"Company\"|\"Discount Scheme\"|\"Discount Scheme Description\"|\"Date Created\"|\"Created By\"|\"Date Changed\"|\"Changed By\"|\"Data Extract Date\"",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_zip_path')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "conn_adfstore01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"par_container_name": {
+						"type": "string"
+					},
+					"par_folder_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().par_folder_name",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().par_container_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
 			]
 		},
 		{
