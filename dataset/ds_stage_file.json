@@ -1,0 +1,51 @@
+{
+	"name": "ds_stage_file",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "conn_adfstore01",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"par_container_name": {
+				"type": "string"
+			},
+			"par_folder_name": {
+				"type": "string"
+			},
+			"par_file_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().par_file_name",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().par_folder_name",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().par_container_name",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": "\u0001",
+			"encodingName": "UTF-8",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": ""
+		},
+		"schema": [
+			{
+				"name": "\"Company\"|\"Discount Scheme\"|\"Discount Scheme Description\"|\"Date Created\"|\"Created By\"|\"Date Changed\"|\"Changed By\"|\"Data Extract Date\"",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

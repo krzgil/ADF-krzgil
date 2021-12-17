@@ -1,0 +1,33 @@
+{
+	"name": "ds_zip_path",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "conn_adfstore01",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"par_container_name": {
+				"type": "string"
+			},
+			"par_folder_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@dataset().par_folder_name",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().par_container_name",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
