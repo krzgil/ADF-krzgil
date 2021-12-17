@@ -81,6 +81,235 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_archive')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyAFile",
+						"description": "Copy a file from the source store to the destination store.",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								},
+								"recursive": false
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_stage_file",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_container_name": {
+										"value": "@pipeline().parameters.par_src_container_name",
+										"type": "Expression"
+									},
+									"par_folder_name": {
+										"value": "@pipeline().parameters.par_src_folder_name",
+										"type": "Expression"
+									},
+									"par_file_name": {
+										"value": "@pipeline().parameters.par_src_file_name",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_archive_file",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_container_name": {
+										"value": "@pipeline().parameters.par_dst_container_name",
+										"type": "Expression"
+									},
+									"par_folder_name": {
+										"value": "@pipeline().parameters.par_dst_folder_name",
+										"type": "Expression"
+									},
+									"par_file_name": {
+										"value": "@pipeline().parameters.par_dst_file_name",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "DeleteAFile",
+						"description": "Delete a file from the source store",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "CopyAFile",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_stage_file",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_container_name": {
+										"value": "@pipeline().parameters.par_src_container_name",
+										"type": "Expression"
+									},
+									"par_folder_name": {
+										"value": "@pipeline().parameters.par_src_folder_name",
+										"type": "Expression"
+									},
+									"par_file_name": {
+										"value": "@pipeline().parameters.par_src_file_name",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": false
+							}
+						}
+					},
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "DeleteAFile",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_upd_file_load_archive_file]",
+							"storedProcedureParameters": {
+								"file_load_id": {
+									"value": {
+										"value": "@pipeline().parameters.par_file_load_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"job_run_id": {
+									"value": {
+										"value": "@pipeline().parameters.par_job_run_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"json_parameter": {
+									"value": {
+										"value": "@string(activity('DeleteAFile').output)",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"pipeline_run_id": {
+									"value": {
+										"value": "@pipeline().parameters.par_pipeline_run_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "conn_sql_framework",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"par_src_container_name": {
+						"type": "string"
+					},
+					"par_src_folder_name": {
+						"type": "string"
+					},
+					"par_src_file_name": {
+						"type": "string"
+					},
+					"par_dst_container_name": {
+						"type": "string"
+					},
+					"par_dst_folder_name": {
+						"type": "string"
+					},
+					"par_dst_file_name": {
+						"type": "string"
+					},
+					"par_file_load_id": {
+						"type": "string"
+					},
+					"par_job_run_id": {
+						"type": "string"
+					},
+					"par_pipeline_run_id": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-11-15T17:14:04Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_archive_blob1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -3073,6 +3302,49 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_test_snowflake_proc')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SnowflakeSource",
+								"query": "CALL PUBLIC.TEST_PROC1();",
+								"exportSettings": {
+									"type": "SnowflakeExportCopyCommand"
+								}
+							},
+							"dataset": {
+								"referenceName": "ds_snowflake_proc",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-10-25T15:21:15Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_test_unzip')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -3145,177 +3417,6 @@
 				"lastPublishTime": "2021-10-22T06:52:17Z"
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dst_sql_framework')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "conn_adfframework",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"par_secret_name": {
-							"value": "@dataset().par_secret_name",
-							"type": "Expression"
-						},
-						"par_sql_server_name": {
-							"value": "@dataset().par_sel_server_name",
-							"type": "Expression"
-						},
-						"par_framework_db_name": {
-							"value": "@dataset().par_framework_db_name",
-							"type": "Expression"
-						},
-						"KeyVaultService": {
-							"value": "@dataset().par_key_vault_service",
-							"type": "Expression"
-						}
-					}
-				},
-				"parameters": {
-					"par_secret_name": {
-						"type": "string",
-						"defaultValue": "frameworkUserPassword"
-					},
-					"par_sel_server_name": {
-						"type": "string",
-						"defaultValue": "eundadf01.database.windows.net"
-					},
-					"par_framework_db_name": {
-						"type": "string",
-						"defaultValue": "eundadf01-framework"
-					},
-					"par_key_vault_service": {
-						"type": "string",
-						"defaultValue": "https://eund-kv.vault.azure.net/"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "job_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "job_name",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline_send_event_from_queue')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Web1",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "read event json",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
-							"connectVia": {
-								"referenceName": "AutoResolveIntegrationRuntime",
-								"type": "IntegrationRuntimeReference"
-							},
-							"method": "POST",
-							"headers": {},
-							"body": {
-								"value": "@string(json(activity('read event json').output.firstRow.event))\n",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "read event json",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('DECLARE @event nvarchar(max);SET @event = dbo.get_event('\n,string(pipeline().parameters.event_id)\n,'); SELECT @event as event')\n\n",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "dst_sql_framework",
-								"type": "DatasetReference",
-								"parameters": {
-									"par_secret_name": {
-										"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
-										"type": "Expression"
-									},
-									"par_sel_server_name": {
-										"value": "@pipeline().globalParameters.gpar_sql_server_name",
-										"type": "Expression"
-									},
-									"par_framework_db_name": {
-										"value": "@pipeline().globalParameters.gpar_framework_db_name",
-										"type": "Expression"
-									},
-									"par_key_vault_service": {
-										"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
-										"type": "Expression"
-									}
-								}
-							}
-						}
-					}
-				],
-				"concurrency": 1,
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"event_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"variables": {
-					"par_event_to_be_sent": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-11-22T17:16:48Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]"
-			]
 		}
 	]
 }
