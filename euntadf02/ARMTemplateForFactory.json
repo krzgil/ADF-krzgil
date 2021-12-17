@@ -3440,6 +3440,1096 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_gen_run_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Execute the Pipeline",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@string(concat('\nDECLARE @pipeline_name varchar(200),\n        @pipeline_run_id int,\n        @params nvarchar(max);\n\nEXEC dbo.usp_exec_pipeline @job_run_id = ',\nstring(pipeline().parameters.job_run_id),\n',\n       @pipeline_name = @pipeline_name OUTPUT,\n       @pipeline_run_id = @pipeline_run_id OUTPUT,\n       @params = @params OUTPUT\n\nSELECT @pipeline_name as pipeline_name,\n       @pipeline_run_id as pipeline_run_id,\n       @params as params;'\n))",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "dst_sql_framework",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_secret_name": {
+										"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+										"type": "Expression"
+									},
+									"par_sel_server_name": {
+										"value": "@pipeline().globalParameters.gpar_sql_server_name",
+										"type": "Expression"
+									},
+									"par_framework_db_name": {
+										"value": "@pipeline().globalParameters.gpar_framework_db_name",
+										"type": "Expression"
+									},
+									"par_key_vault_service": {
+										"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					},
+					{
+						"name": "execute pipeline",
+						"description": "execute pipeline based on output from previous activity",
+						"type": "Switch",
+						"dependsOn": [
+							{
+								"activity": "Execute the Pipeline",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"on": {
+								"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_name)",
+								"type": "Expression"
+							},
+							"cases": [
+								{
+									"value": "pl_check_source_blob2",
+									"activities": [
+										{
+											"name": "Execute pl_check_source_blob2",
+											"description": "Execute pipeline pl_check_source_blob2",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_check_source_blob2",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_check_source_blob1",
+									"activities": [
+										{
+											"name": "Execute pl_check_source_blob1",
+											"description": "Execute pipeline pl_check_source_blob1",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_check_source_blob1",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_check_file_blob1",
+									"activities": [
+										{
+											"name": "Execute pl_check_file_blob1",
+											"description": "Execute pipeline pl_check_file_blob1",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_check_file_blob1",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													},
+													"par_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													},
+													"par_delimiter": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].delimiter)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_check_file_blob2",
+									"activities": [
+										{
+											"name": "Execute pl_check_file_blob2",
+											"description": "Execute pipeline pl_check_file_blob2",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_check_file_blob2",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													},
+													"par_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													},
+													"par_delimiter": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].delimiter)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_download_file_blob1",
+									"activities": [
+										{
+											"name": "Execute pl_download_file_blob1",
+											"description": "Execute pipeline pl_download_file_blob1",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_download_file_blob1",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_src_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_src_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_src_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_dst_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_container_name)",
+														"type": "Expression"
+													},
+													"par_dst_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_folder_name)",
+														"type": "Expression"
+													},
+													"par_dst_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_file_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_download_file_blob2",
+									"activities": [
+										{
+											"name": "Execute pl_download_file_blob2",
+											"description": "Execute pipeline pl_download_file_blob2",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_download_file_blob2",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_src_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_src_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_src_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_dst_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_container_name)",
+														"type": "Expression"
+													},
+													"par_dst_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_folder_name)",
+														"type": "Expression"
+													},
+													"par_dst_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_file_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_check_bin_file_blob1",
+									"activities": [
+										{
+											"name": "Execute pl_check_bin_file_blob1",
+											"description": "Execute pipeline pl_check_bin_file_blob1",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_check_bin_file_blob1",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)\n",
+														"type": "Expression"
+													},
+													"par_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													},
+													"par_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_check_bin_file_blob2",
+									"activities": [
+										{
+											"name": "Execute pl_check_bin_file_blob2",
+											"description": "Execute pipeline pl_check_bin_file_blob2",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_check_bin_file_blob2",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)\n",
+														"type": "Expression"
+													},
+													"par_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													},
+													"par_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_download_zip_file_blob1",
+									"activities": [
+										{
+											"name": "Execute pl_download_zip_file_blob1",
+											"description": "Execute pipeline pl_download_zip_file_blob1",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_download_zip_file_blob1",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_src_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_src_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_src_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_dst_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_container_name)",
+														"type": "Expression"
+													},
+													"par_dst_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_folder_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_download_zip_file_blob2",
+									"activities": [
+										{
+											"name": "Execute pl_download_zip_file_blob2",
+											"description": "Execute pipeline pl_download_zip_file_blob2",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_download_zip_file_blob2",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_src_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_src_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_src_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_dst_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_container_name)",
+														"type": "Expression"
+													},
+													"par_dst_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_folder_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_load_snowflake",
+									"activities": [
+										{
+											"name": "Execute pl_load_snowflake",
+											"description": "Execute pipeline pl_load_snowflake",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_load_snowflake",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_src_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_src_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_src_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_archive_blob1",
+									"activities": [
+										{
+											"name": "Execute pl_archive_source",
+											"description": "Execute pipeline pl_archiving",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_archive_blob1",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_src_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_src_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_src_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_dst_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_container_name)",
+														"type": "Expression"
+													},
+													"par_dst_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_folder_name)",
+														"type": "Expression"
+													},
+													"par_dst_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_file_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "pl_archive_blob2",
+									"activities": [
+										{
+											"name": "Execute pl_archive_source_blob2",
+											"description": "Execute pipeline pl_archiving",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "pl_archive_blob2",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"par_src_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_container_name)",
+														"type": "Expression"
+													},
+													"par_src_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_folder_name)",
+														"type": "Expression"
+													},
+													"par_src_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].src_file_name)",
+														"type": "Expression"
+													},
+													"par_dst_container_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_container_name)",
+														"type": "Expression"
+													},
+													"par_dst_folder_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_folder_name)",
+														"type": "Expression"
+													},
+													"par_dst_file_name": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].dst_file_name)",
+														"type": "Expression"
+													},
+													"par_file_load_id": {
+														"value": "@string(json(activity('Execute the Pipeline').output.firstRow.params)[0].file_load_id)",
+														"type": "Expression"
+													},
+													"par_job_run_id": {
+														"value": "@string(pipeline().parameters.job_run_id)",
+														"type": "Expression"
+													},
+													"par_pipeline_run_id": {
+														"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								}
+							],
+							"defaultActivities": [
+								{
+									"name": "missing pipeline",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "dbo.usp_upd_pipeline_run",
+										"storedProcedureParameters": {
+											"job_run_id": {
+												"value": {
+													"value": "@pipeline().parameters.job_run_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"json_parameter": {
+												"value": {
+													"value": "@string(activity('Execute the Pipeline').output)",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"pipeline_run_id": {
+												"value": {
+													"value": "@string(activity('Execute the Pipeline').output.firstRow.pipeline_run_id)",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "conn_adfframework",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"par_secret_name": {
+												"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+												"type": "Expression"
+											},
+											"par_sql_server_name": {
+												"value": "@pipeline().globalParameters.gpar_sql_server_name",
+												"type": "Expression"
+											},
+											"par_framework_db_name": {
+												"value": "@pipeline().globalParameters.gpar_framework_db_name",
+												"type": "Expression"
+											},
+											"KeyVaultService": {
+												"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"job_run_id": {
+						"type": "int",
+						"defaultValue": 77
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-11-18T11:20:41Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]",
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_check_source_blob2')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_check_source_blob1')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_check_file_blob1')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_check_file_blob2')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_download_file_blob1')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_download_file_blob2')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_check_bin_file_blob1')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_check_bin_file_blob2')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_download_zip_file_blob1')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_download_zip_file_blob2')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_load_snowflake')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_archive_blob1')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_archive_blob2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_load_snowflake')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "dbo.dummy"
+						},
+						"linkedServiceName": {
+							"referenceName": "conn_adfframework",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"par_secret_name": {
+									"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+									"type": "Expression"
+								},
+								"par_sql_server_name": {
+									"value": "@pipeline().globalParameters.gpar_sql_server_name",
+									"type": "Expression"
+								},
+								"par_framework_db_name": {
+									"value": "@pipeline().globalParameters.gpar_framework_db_name",
+									"type": "Expression"
+								},
+								"KeyVaultService": {
+									"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "set JSON",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Stored procedure1",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "dbo.dummy",
+							"storedProcedureParameters": {
+								"file_load_id": {
+									"value": {
+										"value": "@pipeline().parameters.par_file_load_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"job_run_id": {
+									"value": {
+										"value": "@pipeline().parameters.par_job_run_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"json_parameter": {
+									"value": {
+										"value": "@string(activity('Stored procedure1').output)",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"pipeline_run_id": {
+									"value": {
+										"value": "@pipeline().parameters.par_pipeline_run_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "conn_adfframework",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"par_secret_name": {
+									"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+									"type": "Expression"
+								},
+								"par_sql_server_name": {
+									"value": "@pipeline().globalParameters.gpar_sql_server_name",
+									"type": "Expression"
+								},
+								"par_framework_db_name": {
+									"value": "@pipeline().globalParameters.gpar_framework_db_name",
+									"type": "Expression"
+								},
+								"KeyVaultService": {
+									"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"par_src_container_name": {
+						"type": "string"
+					},
+					"par_src_folder_name": {
+						"type": "string"
+					},
+					"par_src_file_name": {
+						"type": "string"
+					},
+					"par_file_load_id": {
+						"type": "string"
+					},
+					"par_job_run_id": {
+						"type": "string"
+					},
+					"par_pipeline_run_id": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-10-25T11:04:29Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_send_event')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "send event",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@string(variables('var_event_json'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"var_event_json": {
+						"type": "String",
+						"defaultValue": "{\"test\":\"123\"}"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-11-22T15:19:28Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_test_unzip')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": false,
+									"deleteFilesAfterCompletion": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings",
+									"compressionProperties": {
+										"type": "ZipDeflateReadSettings"
+									}
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings",
+									"copyBehavior": "PreserveHierarchy"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_blob2_zip_file",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_container_name": "container3",
+									"par_folder_name": "test1",
+									"par_file_name": "data1.zip"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_blob1_bin_path",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_container_name": "zip",
+									"par_folder_name": "file_id_105"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-10-22T06:52:17Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_blob2_zip_file')]",
+				"[concat(variables('factoryId'), '/datasets/ds_blob1_bin_path')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_archive_bin_file')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3478,60 +4568,6 @@
 						}
 					}
 				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_archive_file')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "conn_adfstore01",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"par_container_name": {
-						"type": "string"
-					},
-					"par_folder_name": {
-						"type": "string"
-					},
-					"par_file_name": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().par_file_name",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().par_folder_name",
-							"type": "Expression"
-						},
-						"container": {
-							"value": "@dataset().par_container_name",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "\"Company\"|\"Discount Scheme\"|\"Discount Scheme Description\"|\"Date Created\"|\"Created By\"|\"Date Changed\"|\"Changed By\"|\"Data Extract Date\"",
-						"type": "String"
-					}
-				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
@@ -4085,24 +5121,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/conn_blob2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_snowflake_proc')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "conn_snowflake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SnowflakeTable",
-				"schema": [],
-				"typeProperties": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/conn_snowflake')]"
 			]
 		},
 		{

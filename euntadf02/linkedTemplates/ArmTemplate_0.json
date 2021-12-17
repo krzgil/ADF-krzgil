@@ -119,6 +119,50 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_send_event')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "send event",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@string(variables('var_event_json'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"var_event_json": {
+						"type": "String",
+						"defaultValue": "{\"test\":\"123\"}"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-11-22T15:19:28Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureKeyVault')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -383,60 +427,6 @@
 						}
 					}
 				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_archive_file')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "conn_adfstore01",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"par_container_name": {
-						"type": "string"
-					},
-					"par_folder_name": {
-						"type": "string"
-					},
-					"par_file_name": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().par_file_name",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().par_folder_name",
-							"type": "Expression"
-						},
-						"container": {
-							"value": "@dataset().par_container_name",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "\"Company\"|\"Discount Scheme\"|\"Discount Scheme Description\"|\"Date Created\"|\"Created By\"|\"Date Changed\"|\"Changed By\"|\"Data Extract Date\"",
-						"type": "String"
-					}
-				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
