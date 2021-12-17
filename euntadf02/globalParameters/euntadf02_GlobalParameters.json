@@ -1,0 +1,18 @@
+{
+	"gpar_sql_server_name": {
+		"type": "string",
+		"value": "eundadf01.database.windows.net"
+	},
+	"gpar_framework_db_name": {
+		"type": "string",
+		"value": "eundadf01-framework"
+	},
+	"gpar_kv_sql_server_password": {
+		"type": "string",
+		"value": "frameworkUserPassword"
+	},
+	"gpar_key_vault_service_name": {
+		"type": "string",
+		"value": "https://eund-kv.vault.azure.net/"
+	}
+}

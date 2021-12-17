@@ -1,0 +1,173 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "euntadf02"
+		},
+		"conn_adfframework_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_adfframework'"
+		},
+		"conn_blob2_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'conn_blob2'"
+		},
+		"conn_sql_framework_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_sql_framework'"
+		},
+		"AzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "@{linkedService().par_key_vault_service}"
+		},
+		"conn_adfstore01_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'conn_adfstore01'"
+		},
+		"conn_blob2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://test3hierarchical.dfs.core.windows.net"
+		},
+		"conn_snowflake_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_snowflake'"
+		},
+		"conn_snowflake2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_snowflake2'"
+		},
+		"conn_snowflake3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_snowflake3'"
+		},
+		"eundadf01-kv-pep_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.KeyVault/vaults/eund-kv"
+		},
+		"eundadf01-kv-pep_properties_groupId": {
+			"type": "string",
+			"defaultValue": "vault"
+		},
+		"eundadf01-mssql-pep_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.Sql/servers/eundadf01"
+		},
+		"eundadf01-mssql-pep_properties_groupId": {
+			"type": "string",
+			"defaultValue": "sqlServer"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "euntadf02_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"conn_blob2_accountKey": {
+						"value": "[parameters('conn_blob2_accountKey')]"
+					},
+					"conn_sql_framework_connectionString": {
+						"value": "[parameters('conn_sql_framework_connectionString')]"
+					},
+					"AzureKeyVault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
+					},
+					"conn_adfstore01_sasUri": {
+						"value": "[parameters('conn_adfstore01_sasUri')]"
+					},
+					"conn_blob2_properties_typeProperties_url": {
+						"value": "[parameters('conn_blob2_properties_typeProperties_url')]"
+					},
+					"conn_snowflake_connectionString": {
+						"value": "[parameters('conn_snowflake_connectionString')]"
+					},
+					"conn_snowflake2_connectionString": {
+						"value": "[parameters('conn_snowflake2_connectionString')]"
+					},
+					"conn_snowflake3_connectionString": {
+						"value": "[parameters('conn_snowflake3_connectionString')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "euntadf02_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"conn_adfframework_connectionString": {
+						"value": "[parameters('conn_adfframework_connectionString')]"
+					},
+					"eundadf01-kv-pep_properties_privateLinkResourceId": {
+						"value": "[parameters('eundadf01-kv-pep_properties_privateLinkResourceId')]"
+					},
+					"eundadf01-kv-pep_properties_groupId": {
+						"value": "[parameters('eundadf01-kv-pep_properties_groupId')]"
+					},
+					"eundadf01-mssql-pep_properties_privateLinkResourceId": {
+						"value": "[parameters('eundadf01-mssql-pep_properties_privateLinkResourceId')]"
+					},
+					"eundadf01-mssql-pep_properties_groupId": {
+						"value": "[parameters('eundadf01-mssql-pep_properties_groupId')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'euntadf02_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "euntadf02_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'euntadf02_ArmTemplate_1')]"
+			]
+		}
+	]
+}

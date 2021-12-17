@@ -1,0 +1,54 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "euntadf02"
+		},
+		"conn_adfframework_connectionString": {
+			"value": ""
+		},
+		"conn_blob2_accountKey": {
+			"value": ""
+		},
+		"conn_sql_framework_connectionString": {
+			"value": ""
+		},
+		"AzureKeyVault_properties_typeProperties_baseUrl": {
+			"value": "@{linkedService().par_key_vault_service}"
+		},
+		"conn_adfstore01_sasUri": {
+			"value": ""
+		},
+		"conn_blob2_properties_typeProperties_url": {
+			"value": "https://test3hierarchical.dfs.core.windows.net"
+		},
+		"conn_snowflake_connectionString": {
+			"value": ""
+		},
+		"conn_snowflake2_connectionString": {
+			"value": ""
+		},
+		"conn_snowflake3_connectionString": {
+			"value": ""
+		},
+		"eundadf01-kv-pep_properties_privateLinkResourceId": {
+			"value": "/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.KeyVault/vaults/eund-kv"
+		},
+		"eundadf01-kv-pep_properties_groupId": {
+			"value": "vault"
+		},
+		"eundadf01-mssql-pep_properties_privateLinkResourceId": {
+			"value": "/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.Sql/servers/eundadf01"
+		},
+		"eundadf01-mssql-pep_properties_groupId": {
+			"value": "sqlServer"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
