@@ -152,7 +152,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Check event count in loop",
+									"activity": "Set event count",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -202,7 +202,7 @@
 										"type": "Lookup",
 										"dependsOn": [
 											{
-												"activity": "Set run id",
+												"activity": "test - Set run id",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -305,7 +305,7 @@
 										}
 									},
 									{
-										"name": "Set json",
+										"name": "test read json",
 										"type": "SetVariable",
 										"dependsOn": [
 											{
@@ -319,13 +319,13 @@
 										"typeProperties": {
 											"variableName": "test2",
 											"value": {
-												"value": "@string(json(activity('read event json').output.firstRow.event_params)[0])",
+												"value": "@string(json(activity('read event json').output.firstRow.event_params))",
 												"type": "Expression"
 											}
 										}
 									},
 									{
-										"name": "Set run id",
+										"name": "test - Set run id",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"userProperties": [],
@@ -361,7 +361,7 @@
 							}
 						},
 						{
-							"name": "greater",
+							"name": "test greater",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
