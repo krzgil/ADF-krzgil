@@ -988,7 +988,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_eh_job_run')]",
+			"name": "[concat(parameters('factoryName'), '/pl_eh_init_job_run')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1038,6 +1038,386 @@
 								}
 							}
 						}
+					},
+					{
+						"name": "Set var_event_count",
+						"description": "",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Start the job",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "var_event_count",
+							"value": "1"
+						}
+					},
+					{
+						"name": "run_all_events",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "Set var_event_count",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(int(variables('var_event_count')),0)",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Check event count in loop",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat('SELECT dbo.fn_get_new_event_count( '\n,string(activity('Start the job').output.firstRow.job_run_id)\n,') as event_count')",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "dst_sql_framework",
+											"type": "DatasetReference",
+											"parameters": {
+												"par_secret_name": {
+													"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+													"type": "Expression"
+												},
+												"par_sel_server_name": {
+													"value": "@pipeline().globalParameters.gpar_sql_server_name",
+													"type": "Expression"
+												},
+												"par_framework_db_name": {
+													"value": "@pipeline().globalParameters.gpar_framework_db_name",
+													"type": "Expression"
+												},
+												"par_key_vault_service": {
+													"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								},
+								{
+									"name": "Set event count",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Check event count in loop",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "var_event_count",
+										"value": {
+											"value": "@string(activity('Check event count in loop').output.firstRow.event_count)\n",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Check if events exist",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "Set event count",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@greater(int(activity('Check event count in loop').output.firstRow.event_count), 0)",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Web1",
+												"type": "WebActivity",
+												"dependsOn": [
+													{
+														"activity": "read event json",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
+													"connectVia": {
+														"referenceName": "AutoResolveIntegrationRuntime",
+														"type": "IntegrationRuntimeReference"
+													},
+													"method": "POST",
+													"headers": {},
+													"body": {
+														"value": "@string(json(activity('read event json').output.firstRow.event_params))",
+														"type": "Expression"
+													}
+												}
+											},
+											{
+												"name": "read event json",
+												"type": "Lookup",
+												"dependsOn": [
+													{
+														"activity": "test - Set run id",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "@concat('DECLARE @event_params nvarchar(max);DECLARE @new_event_id int;EXEC dbo.get_new_event @job_run_id = '\n, string(activity('Start the job').output.firstRow.job_run_id)\n,', @event_params = @event_params OUTPUT, @new_event_id = @new_event_id OUTPUT;SELECT @event_params as event_params, @new_event_id as new_event_id')",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"dataset": {
+														"referenceName": "dst_sql_framework",
+														"type": "DatasetReference",
+														"parameters": {
+															"par_secret_name": {
+																"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+																"type": "Expression"
+															},
+															"par_sel_server_name": {
+																"value": "@pipeline().globalParameters.gpar_sql_server_name",
+																"type": "Expression"
+															},
+															"par_framework_db_name": {
+																"value": "@pipeline().globalParameters.gpar_framework_db_name",
+																"type": "Expression"
+															},
+															"par_key_vault_service": {
+																"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+																"type": "Expression"
+															}
+														}
+													}
+												}
+											},
+											{
+												"name": "delete row from new_event",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Web1",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "delete_new_event",
+													"storedProcedureParameters": {
+														"new_event_id": {
+															"value": {
+																"value": "@string(activity('read event json').output.firstRow.new_event_id)",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "conn_adfframework",
+													"type": "LinkedServiceReference",
+													"parameters": {
+														"par_secret_name": {
+															"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+															"type": "Expression"
+														},
+														"par_sql_server_name": {
+															"value": "@pipeline().globalParameters.gpar_sql_server_name",
+															"type": "Expression"
+														},
+														"par_framework_db_name": {
+															"value": "@pipeline().globalParameters.gpar_framework_db_name",
+															"type": "Expression"
+														},
+														"KeyVaultService": {
+															"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+															"type": "Expression"
+														}
+													}
+												}
+											},
+											{
+												"name": "test read json",
+												"type": "SetVariable",
+												"dependsOn": [
+													{
+														"activity": "read event json",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "test2",
+													"value": {
+														"value": "@string(json(activity('read event json').output.firstRow.event_params))",
+														"type": "Expression"
+													}
+												}
+											},
+											{
+												"name": "test - Set run id",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "test3",
+													"value": {
+														"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "ReSet event count",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Check if events exist",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "var_event_count",
+										"value": {
+											"value": "0",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "test greater",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Check event count in loop",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "test1",
+										"value": {
+											"value": "@string(activity('Check event count in loop').output.firstRow.event_count)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "test  -job_run_id 2",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Check event count in loop",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "test3",
+										"value": {
+											"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "0.00:10:00"
+						}
+					},
+					{
+						"name": "test - job_run_id 1",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Start the job",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "job_run_id",
+							"value": {
+								"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
@@ -1056,6 +1436,15 @@
 						"defaultValue": "1"
 					},
 					"job_run_id": {
+						"type": "String"
+					},
+					"test1": {
+						"type": "String"
+					},
+					"test2": {
+						"type": "String"
+					},
+					"test3": {
 						"type": "String"
 					}
 				},
