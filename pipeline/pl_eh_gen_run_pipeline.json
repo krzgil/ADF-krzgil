@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "dbo.save_new_event",
+					"storedProcedureName": "dbo.usp_run_event",
 					"storedProcedureParameters": {
 						"event": {
 							"value": {
