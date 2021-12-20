@@ -192,7 +192,7 @@
 											},
 											"method": "POST",
 											"body": {
-												"value": "@string(json(activity('read event json').output.firstRow.event_params)[0])",
+												"value": "@string(json(activity('read event json').output.firstRow.event_params))",
 												"type": "Expression"
 											}
 										}
