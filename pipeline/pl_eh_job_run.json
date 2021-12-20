@@ -192,7 +192,7 @@
 											},
 											"method": "POST",
 											"body": {
-												"value": "@string(json(activity('read event json').output.firstRow.event_params))",
+												"value": "@string(json(activity('read event json').output.firstRow.event_params)[0])",
 												"type": "Expression"
 											}
 										}
@@ -294,6 +294,26 @@
 													"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
 													"type": "Expression"
 												}
+											}
+										}
+									},
+									{
+										"name": "Set json",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "read event json",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "test2",
+											"value": {
+												"value": "@string(json(activity('read event json').output.firstRow.event_params)[0])",
+												"type": "Expression"
 											}
 										}
 									}
