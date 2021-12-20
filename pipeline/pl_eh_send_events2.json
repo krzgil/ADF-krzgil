@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@less(int(string(activity('Check event count in loop').output)), 0)",
+						"value": "@less(int(string(activity('Check event count in loop').output.firstRow.event_count)), 0)\n",
 						"type": "Expression"
 					},
 					"activities": [
