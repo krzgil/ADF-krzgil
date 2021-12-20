@@ -161,7 +161,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(int(variables('var_event_count')), 0)",
+									"value": "@greater(int(string(activity('Check event count in loop').output.firstRow.event_count)), 0)",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
