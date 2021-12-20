@@ -988,6 +988,85 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_eh_job_run')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Start the job",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.03:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@if(equals(pipeline().parameters.par_restart_job, 0)\n, 'DECLARE @job_run_id int;\nEXEC dbo.init_daily_load @job_restart_ind = 0, @job_run_id = @job_run_id OUTPUT;\nSELECT @job_run_id as job_run_id'\n, 'DECLARE @job_run_id int;\nEXEC dbo.init_daily_load @job_restart_ind = 1, @job_run_id = @job_run_id OUTPUT;\nSELECT @job_run_id as job_run_id'\n)",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "dst_sql_framework",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_secret_name": {
+										"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+										"type": "Expression"
+									},
+									"par_sel_server_name": {
+										"value": "@pipeline().globalParameters.gpar_sql_server_name",
+										"type": "Expression"
+									},
+									"par_framework_db_name": {
+										"value": "@pipeline().globalParameters.gpar_framework_db_name",
+										"type": "Expression"
+									},
+									"par_key_vault_service": {
+										"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"par_restart_job": {
+						"type": "int",
+						"defaultValue": 0
+					}
+				},
+				"variables": {
+					"var_event_count": {
+						"type": "String",
+						"defaultValue": "1"
+					},
+					"job_run_id": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-11-23T16:21:09Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_job_run')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
