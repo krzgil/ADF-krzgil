@@ -245,15 +245,15 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "test3",
+								"variableName": "test4",
 								"value": {
-									"value": "@string(activity('Check event count in loop').output.firstRow.event_count)",
+									"value": "@greater(int(activity('Check event count in loop').output.firstRow.event_count),0)",
 									"type": "Expression"
 								}
 							}
 						}
 					],
-					"timeout": "7.00:00:00"
+					"timeout": "0.00:10:00"
 				}
 			}
 		],
@@ -279,6 +279,9 @@
 			},
 			"test3": {
 				"type": "String"
+			},
+			"test4": {
+				"type": "Boolean"
 			}
 		},
 		"annotations": [],
