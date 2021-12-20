@@ -3979,7 +3979,7 @@
 							"storedProcedureParameters": {
 								"event": {
 									"value": {
-										"value": "@pipeline().parameters.event",
+										"value": "@string(pipeline().parameters.event)",
 										"type": "Expression"
 									},
 									"type": "String"
