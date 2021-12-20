@@ -15,11 +15,11 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "dbo.dummy2",
+					"storedProcedureName": "dbo.save_new_event",
 					"storedProcedureParameters": {
-						"json": {
+						"event": {
 							"value": {
-								"value": "@string(pipeline().parameters.event)",
+								"value": "@pipeline().parameters.event",
 								"type": "Expression"
 							},
 							"type": "String"
