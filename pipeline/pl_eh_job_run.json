@@ -99,7 +99,10 @@
 							"typeProperties": {
 								"source": {
 									"type": "AzureSqlSource",
-									"sqlReaderQuery": "SELECT dbo.fn_get_new_event_count() as event_count",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT dbo.fn_get_new_event_count( '\n,string(activity('Start the job').output.firstRow.job_run_id)\n,') as event_count')",
+										"type": "Expression"
+									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
@@ -379,13 +382,33 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "test  -job_run_id 2",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Check event count in loop",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "test3",
+								"value": {
+									"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
+									"type": "Expression"
+								}
+							}
 						}
 					],
 					"timeout": "0.00:10:00"
 				}
 			},
 			{
-				"name": "test - Set variable1",
+				"name": "test - job_run_id 1",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
