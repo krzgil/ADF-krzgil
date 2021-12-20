@@ -19,7 +19,7 @@
 					"storedProcedureParameters": {
 						"json": {
 							"value": {
-								"value": "@string(pipeline().parameters.par_json)",
+								"value": "@string(pipeline().parameters.event)",
 								"type": "Expression"
 							},
 							"type": "String"
