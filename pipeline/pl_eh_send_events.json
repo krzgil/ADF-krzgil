@@ -240,19 +240,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "test greater",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "test1",
-					"value": {
-						"value": "@string(activity('Check event count in loop').output.firstRow.event_count)",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
