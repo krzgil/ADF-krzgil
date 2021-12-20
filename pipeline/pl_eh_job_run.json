@@ -161,7 +161,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(int(string(activity('Check event count in loop').output.firstRow.event_count)), 0)",
+									"value": "@greater(int(activity('Check event count in loop').output.firstRow.event_count), 0)",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
@@ -267,7 +267,7 @@
 											"storedProcedureParameters": {
 												"new_event_id": {
 													"value": {
-														"value": "@string(json(activity('read event json').output.firstRow.new_event_id))",
+														"value": "@string(activity('read event json').output.firstRow.new_event_id)",
 														"type": "Expression"
 													},
 													"type": "Int32"
