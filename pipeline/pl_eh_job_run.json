@@ -132,7 +132,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Check event count in loop",
+									"activity": "Set job_run_id",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -298,6 +298,46 @@
 										}
 									}
 								]
+							}
+						},
+						{
+							"name": "ReSet event count",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Check if events exist",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_event_count",
+								"value": {
+									"value": "0",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set job_run_id",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Check event count in loop",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "job_run_id",
+								"value": {
+									"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
+									"type": "Expression"
+								}
 							}
 						}
 					],
