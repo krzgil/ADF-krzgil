@@ -78,7 +78,7 @@
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Web1",
+										"name": "Send one event",
 										"type": "WebActivity",
 										"dependsOn": [
 											{
@@ -160,7 +160,7 @@
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [
 											{
-												"activity": "Web1",
+												"activity": "Send one event",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -206,26 +206,6 @@
 													"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
 													"type": "Expression"
 												}
-											}
-										}
-									},
-									{
-										"name": "test read json",
-										"type": "SetVariable",
-										"dependsOn": [
-											{
-												"activity": "read event json",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
-										"userProperties": [],
-										"typeProperties": {
-											"variableName": "test2",
-											"value": {
-												"value": "@string(json(activity('read event json').output.firstRow.event_params))",
-												"type": "Expression"
 											}
 										}
 									}
