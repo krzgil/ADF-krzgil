@@ -6969,6 +6969,556 @@
 				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
 				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/arch_pl_eh_send_events')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Check event count in loop",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT dbo.fn_get_new_event_count( '\n,string(pipeline().parameters.job_run_id)\n,') as event_count')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "dst_sql_framework",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_secret_name": {
+										"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+										"type": "Expression"
+									},
+									"par_sel_server_name": {
+										"value": "@pipeline().globalParameters.gpar_sql_server_name",
+										"type": "Expression"
+									},
+									"par_framework_db_name": {
+										"value": "@pipeline().globalParameters.gpar_framework_db_name",
+										"type": "Expression"
+									},
+									"par_key_vault_service": {
+										"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					},
+					{
+						"name": "Check if events exist",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Check event count in loop",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(int(activity('Check event count in loop').output.firstRow.event_count), 0)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Web1",
+									"type": "WebActivity",
+									"dependsOn": [
+										{
+											"activity": "read event json",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
+										"connectVia": {
+											"referenceName": "AutoResolveIntegrationRuntime",
+											"type": "IntegrationRuntimeReference"
+										},
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "@string(json(activity('read event json').output.firstRow.event_params))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "read event json",
+									"type": "Lookup",
+									"dependsOn": [
+										{
+											"activity": "test - Set run id",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat('DECLARE @event_params nvarchar(max);DECLARE @new_event_id int;EXEC dbo.get_new_event @job_run_id = '\n, string(pipeline().parameters.job_run_id)\n,', @event_params = @event_params OUTPUT, @new_event_id = @new_event_id OUTPUT;SELECT @event_params as event_params, @new_event_id as new_event_id')",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "dst_sql_framework",
+											"type": "DatasetReference",
+											"parameters": {
+												"par_secret_name": {
+													"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+													"type": "Expression"
+												},
+												"par_sel_server_name": {
+													"value": "@pipeline().globalParameters.gpar_sql_server_name",
+													"type": "Expression"
+												},
+												"par_framework_db_name": {
+													"value": "@pipeline().globalParameters.gpar_framework_db_name",
+													"type": "Expression"
+												},
+												"par_key_vault_service": {
+													"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								},
+								{
+									"name": "delete row from new_event",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Web1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "delete_new_event",
+										"storedProcedureParameters": {
+											"new_event_id": {
+												"value": {
+													"value": "@string(activity('read event json').output.firstRow.new_event_id)",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "conn_adfframework",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"par_secret_name": {
+												"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+												"type": "Expression"
+											},
+											"par_sql_server_name": {
+												"value": "@pipeline().globalParameters.gpar_sql_server_name",
+												"type": "Expression"
+											},
+											"par_framework_db_name": {
+												"value": "@pipeline().globalParameters.gpar_framework_db_name",
+												"type": "Expression"
+											},
+											"KeyVaultService": {
+												"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "test read json",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "read event json",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "test2",
+										"value": {
+											"value": "@string(json(activity('read event json').output.firstRow.event_params))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "test - Set run id",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "test3",
+										"value": {
+											"value": "@string(pipeline().parameters.job_run_id)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"job_run_id": {
+						"type": "int",
+						"defaultValue": 0
+					}
+				},
+				"variables": {
+					"var_event_count": {
+						"type": "String",
+						"defaultValue": "1"
+					},
+					"job_run_id": {
+						"type": "String"
+					},
+					"test1": {
+						"type": "String"
+					},
+					"test2": {
+						"type": "String"
+					},
+					"test3": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-11-23T16:21:09Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_eh_send_events')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "send all events",
+						"type": "Until",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@lessOrEquals(int(string(activity('Check event count in loop').output.firstRow.event_count)), 0)\n",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Check event count in loop",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat('SELECT dbo.fn_get_new_event_count( '\n,string(pipeline().parameters.job_run_id)\n,') as event_count')",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "dst_sql_framework",
+											"type": "DatasetReference",
+											"parameters": {
+												"par_secret_name": {
+													"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+													"type": "Expression"
+												},
+												"par_sel_server_name": {
+													"value": "@pipeline().globalParameters.gpar_sql_server_name",
+													"type": "Expression"
+												},
+												"par_framework_db_name": {
+													"value": "@pipeline().globalParameters.gpar_framework_db_name",
+													"type": "Expression"
+												},
+												"par_key_vault_service": {
+													"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								},
+								{
+									"name": "Check if events exist",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "Check event count in loop",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@greater(int(activity('Check event count in loop').output.firstRow.event_count), 0)",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Send one event",
+												"type": "WebActivity",
+												"dependsOn": [
+													{
+														"activity": "read event json",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"url": "https://prod-03.uksouth.logic.azure.com:443/workflows/7ecd81733c584ca4b5a6a0f630963012/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rpaNYf0dvVQATVVbaGxv9UDOERESm5khbqeToghEKf4",
+													"connectVia": {
+														"referenceName": "AutoResolveIntegrationRuntime",
+														"type": "IntegrationRuntimeReference"
+													},
+													"method": "POST",
+													"headers": {},
+													"body": {
+														"value": "@string(json(activity('read event json').output.firstRow.event_params))",
+														"type": "Expression"
+													}
+												}
+											},
+											{
+												"name": "read event json",
+												"type": "Lookup",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "@concat('DECLARE @event_params nvarchar(max);DECLARE @new_event_id int;EXEC dbo.get_new_event @job_run_id = '\n, string(pipeline().parameters.job_run_id)\n,', @event_params = @event_params OUTPUT, @new_event_id = @new_event_id OUTPUT;SELECT @event_params as event_params, @new_event_id as new_event_id')",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"dataset": {
+														"referenceName": "dst_sql_framework",
+														"type": "DatasetReference",
+														"parameters": {
+															"par_secret_name": {
+																"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+																"type": "Expression"
+															},
+															"par_sel_server_name": {
+																"value": "@pipeline().globalParameters.gpar_sql_server_name",
+																"type": "Expression"
+															},
+															"par_framework_db_name": {
+																"value": "@pipeline().globalParameters.gpar_framework_db_name",
+																"type": "Expression"
+															},
+															"par_key_vault_service": {
+																"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+																"type": "Expression"
+															}
+														}
+													}
+												}
+											},
+											{
+												"name": "delete row from new_event",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Send one event",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "delete_new_event",
+													"storedProcedureParameters": {
+														"new_event_id": {
+															"value": {
+																"value": "@string(activity('read event json').output.firstRow.new_event_id)",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "conn_adfframework",
+													"type": "LinkedServiceReference",
+													"parameters": {
+														"par_secret_name": {
+															"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+															"type": "Expression"
+														},
+														"par_sql_server_name": {
+															"value": "@pipeline().globalParameters.gpar_sql_server_name",
+															"type": "Expression"
+														},
+														"par_framework_db_name": {
+															"value": "@pipeline().globalParameters.gpar_framework_db_name",
+															"type": "Expression"
+														},
+														"KeyVaultService": {
+															"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "test condition in until",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Check if events exist",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "test4",
+										"value": {
+											"value": "@greater(int(activity('Check event count in loop').output.firstRow.event_count),0)",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "0.00:10:00"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"job_run_id": {
+						"type": "int",
+						"defaultValue": 0
+					}
+				},
+				"variables": {
+					"test4": {
+						"type": "Boolean"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-11-23T16:21:09Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]"
+			]
 		}
 	]
 }
