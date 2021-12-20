@@ -213,7 +213,7 @@
 											"source": {
 												"type": "AzureSqlSource",
 												"sqlReaderQuery": {
-													"value": "@concat('DECLARE @event_params nvarchar(max);\n\tDECLARE @new_event_id int;\n\tEXEC dbo.get_new_event @job_run_id = ', string(activity('Start the job').output.firstRow.job_run_id), ', @event_params = event_params OUTPUT, @new_event_id = new_event_id OUTPUT;\n\tSELECT @event_params as event_params, @new_event_id as new_event_id')",
+													"value": "@concat('DECLARE @event_params nvarchar(max);\n\tDECLARE @new_event_id int;\n\tEXEC dbo.get_new_event @job_run_id = ', string(activity('Start the job').output.firstRow.job_run_id), ', @event_params = @event_params OUTPUT, @new_event_id = @new_event_id OUTPUT;\n\tSELECT @event_params as event_params, @new_event_id as new_event_id')",
 													"type": "Expression"
 												},
 												"queryTimeout": "02:00:00",
