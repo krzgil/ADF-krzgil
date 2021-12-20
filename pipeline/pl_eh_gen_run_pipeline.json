@@ -1,0 +1,62 @@
+{
+	"name": "pl_eh_gen_run_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "save parameter into event_queue table",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "dbo.dummy2",
+					"storedProcedureParameters": {
+						"json": {
+							"value": {
+								"value": "@string(pipeline().parameters.par_json)",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "conn_adfframework",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"par_secret_name": {
+							"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
+							"type": "Expression"
+						},
+						"par_sql_server_name": {
+							"value": "@pipeline().globalParameters.gpar_sql_server_name",
+							"type": "Expression"
+						},
+						"par_framework_db_name": {
+							"value": "@pipeline().globalParameters.gpar_framework_db_name",
+							"type": "Expression"
+						},
+						"KeyVaultService": {
+							"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"event": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-11-22T15:34:59Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
