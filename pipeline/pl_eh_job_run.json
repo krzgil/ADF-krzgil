@@ -323,6 +323,26 @@
 					],
 					"timeout": "0.00:10:00"
 				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Start the job",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "job_run_id",
+					"value": {
+						"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
