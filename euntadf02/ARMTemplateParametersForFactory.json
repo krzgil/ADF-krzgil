@@ -43,6 +43,9 @@
 		},
 		"eundadf01-mssql-pep_properties_groupId": {
 			"value": "sqlServer"
+		},
+		"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
+			"value": 0
 		}
 	}
 }

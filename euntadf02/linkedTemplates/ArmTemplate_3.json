@@ -6,6 +6,10 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "euntadf02"
+		},
+		"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
+			"type": "int",
+			"defaultValue": 0
 		}
 	},
 	"variables": {
@@ -2026,6 +2030,38 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_eh_send_events')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/daily_load_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pl_eh_init_job_run",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"par_restart_job": "[parameters('daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 24,
+						"startTime": "2021-12-21T13:40:00Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_eh_init_job_run')]"
 			]
 		},
 		{

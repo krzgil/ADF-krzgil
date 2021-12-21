@@ -59,6 +59,10 @@
 			"type": "string",
 			"defaultValue": "sqlServer"
 		},
+		"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
+			"type": "int",
+			"defaultValue": 0
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -182,6 +186,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
+						"value": "[parameters('daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job')]"
 					}
 				}
 			},
