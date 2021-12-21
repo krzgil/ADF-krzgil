@@ -781,6 +781,32 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "send all events",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "execute pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_eh_send_events",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"job_run_id": {
+							"value": "@pipeline().parameters.job_run_id",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
