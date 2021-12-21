@@ -3153,74 +3153,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_eh_gen_run_pipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "save parameter into event_queue table",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.00:10:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "dbo.usp_run_event",
-							"storedProcedureParameters": {
-								"event": {
-									"value": {
-										"value": "@string(pipeline().parameters.event)",
-										"type": "Expression"
-									},
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "conn_adfframework",
-							"type": "LinkedServiceReference",
-							"parameters": {
-								"par_secret_name": {
-									"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
-									"type": "Expression"
-								},
-								"par_sql_server_name": {
-									"value": "@pipeline().globalParameters.gpar_sql_server_name",
-									"type": "Expression"
-								},
-								"par_framework_db_name": {
-									"value": "@pipeline().globalParameters.gpar_framework_db_name",
-									"type": "Expression"
-								},
-								"KeyVaultService": {
-									"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"event": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-11-22T15:34:59Z"
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/pl_load_snowflake')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -3409,6 +3341,80 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-10-25T15:21:15Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_test_unzip')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": false,
+									"deleteFilesAfterCompletion": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings",
+									"compressionProperties": {
+										"type": "ZipDeflateReadSettings"
+									}
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings",
+									"copyBehavior": "PreserveHierarchy"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_blob2_zip_file",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_container_name": "container3",
+									"par_folder_name": "test1",
+									"par_file_name": "data1.zip"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_blob1_bin_path",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_container_name": "zip",
+									"par_folder_name": "file_id_105"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-10-22T06:52:17Z"
 			},
 			"dependsOn": []
 		}

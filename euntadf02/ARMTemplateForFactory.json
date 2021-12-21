@@ -3963,11 +3963,11 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "save parameter into event_queue table",
-						"type": "SqlServerStoredProcedure",
+						"name": "Save event",
+						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "0.00:10:00",
+							"timeout": "7.00:00:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -3975,38 +3975,77 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"storedProcedureName": "dbo.usp_run_event",
-							"storedProcedureParameters": {
-								"event": {
-									"value": {
-										"value": "@string(pipeline().parameters.event)",
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('DECLARE @job_run_id int; EXEC dbo.usp_run_event '''\n,string(pipeline().parameters.event)\n,''', @job_run_id = @job_run_id OUTPUT; SELECT @job_run_id as job_run_id')",
+									"type": "Expression"
+								},
+								"queryTimeout": "00:10:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "dst_sql_framework",
+								"type": "DatasetReference",
+								"parameters": {
+									"par_secret_name": {
+										"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
 										"type": "Expression"
 									},
-									"type": "String"
+									"par_sel_server_name": {
+										"value": "@pipeline().globalParameters.gpar_sql_server_name",
+										"type": "Expression"
+									},
+									"par_framework_db_name": {
+										"value": "@pipeline().globalParameters.gpar_framework_db_name",
+										"type": "Expression"
+									},
+									"par_key_vault_service": {
+										"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
+										"type": "Expression"
+									}
 								}
 							}
-						},
-						"linkedServiceName": {
-							"referenceName": "conn_adfframework",
-							"type": "LinkedServiceReference",
-							"parameters": {
-								"par_secret_name": {
-									"value": "@pipeline().globalParameters.gpar_kv_sql_server_password",
-									"type": "Expression"
-								},
-								"par_sql_server_name": {
-									"value": "@pipeline().globalParameters.gpar_sql_server_name",
-									"type": "Expression"
-								},
-								"par_framework_db_name": {
-									"value": "@pipeline().globalParameters.gpar_framework_db_name",
-									"type": "Expression"
-								},
-								"KeyVaultService": {
-									"value": "@pipeline().globalParameters.gpar_key_vault_service_name",
-									"type": "Expression"
-								}
+						}
+					},
+					{
+						"name": "check if jub_run_id was set",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Save event",
+								"dependencyConditions": [
+									"Succeeded"
+								]
 							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(activity('Save event').output.firstRow.job_run_id, 0)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "run generic pipeline",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_gen_run_pipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"job_run_id": {
+												"value": "@int(activity('Save event').output.firstRow.job_run_id)",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
 						}
 					}
 				],
@@ -4023,7 +4062,8 @@
 				"lastPublishTime": "2021-11-22T15:34:59Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/conn_adfframework')]"
+				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_gen_run_pipeline')]"
 			]
 		},
 		{
