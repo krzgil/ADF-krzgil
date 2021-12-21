@@ -1,0 +1,27 @@
+{
+	"name": "daily_load_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_eh_init_job_run",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"par_restart_job": 0
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 24,
+				"startTime": "2021-12-21T13:33:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
