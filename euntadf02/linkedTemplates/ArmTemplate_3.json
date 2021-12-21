@@ -1982,6 +1982,32 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "send all events",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "execute pipeline",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_eh_send_events",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"job_run_id": {
+									"value": "@pipeline().parameters.job_run_id",
+									"type": "Expression"
+								}
+							}
+						}
 					}
 				],
 				"policy": {
@@ -1998,7 +2024,8 @@
 				"lastPublishTime": "2021-11-18T11:20:41Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]"
+				"[concat(variables('factoryId'), '/datasets/dst_sql_framework')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_eh_send_events')]"
 			]
 		},
 		{
