@@ -49,7 +49,7 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "check if jub_run_id was set",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
