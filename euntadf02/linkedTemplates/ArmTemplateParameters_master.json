@@ -32,6 +32,9 @@
 		"conn_snowflake3_connectionString": {
 			"value": ""
 		},
+		"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
+			"value": 0
+		},
 		"eundadf01-kv-pep_properties_privateLinkResourceId": {
 			"value": "/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.KeyVault/vaults/eund-kv"
 		},
@@ -43,9 +46,6 @@
 		},
 		"eundadf01-mssql-pep_properties_groupId": {
 			"value": "sqlServer"
-		},
-		"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
-			"value": 0
 		},
 		"containerUri": {
 			"value": ""
