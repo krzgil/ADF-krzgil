@@ -5,7 +5,14 @@
 			{
 				"name": "Start the job",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "enable logic app",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.03:00:00",
 					"retry": 0,
@@ -203,14 +210,7 @@
 									{
 										"name": "read event json",
 										"type": "Lookup",
-										"dependsOn": [
-											{
-												"activity": "test - Set run id",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
+										"dependsOn": [],
 										"policy": {
 											"timeout": "7.00:00:00",
 											"retry": 0,
@@ -306,39 +306,6 @@
 												}
 											}
 										}
-									},
-									{
-										"name": "test read json",
-										"type": "SetVariable",
-										"dependsOn": [
-											{
-												"activity": "read event json",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
-										"userProperties": [],
-										"typeProperties": {
-											"variableName": "test2",
-											"value": {
-												"value": "@string(json(activity('read event json').output.firstRow.event_params))",
-												"type": "Expression"
-											}
-										}
-									},
-									{
-										"name": "test - Set run id",
-										"type": "SetVariable",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"variableName": "test3",
-											"value": {
-												"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
-												"type": "Expression"
-											}
-										}
 									}
 								]
 							}
@@ -362,69 +329,30 @@
 									"type": "Expression"
 								}
 							}
-						},
-						{
-							"name": "test greater",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Check event count in loop",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "test1",
-								"value": {
-									"value": "@string(activity('Check event count in loop').output.firstRow.event_count)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "test  -job_run_id 2",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Check event count in loop",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "test3",
-								"value": {
-									"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
-									"type": "Expression"
-								}
-							}
 						}
 					],
 					"timeout": "0.00:10:00"
 				}
 			},
 			{
-				"name": "test - job_run_id 1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Start the job",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"name": "enable logic app",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "job_run_id",
-					"value": {
-						"value": "@string(activity('Start the job').output.firstRow.job_run_id)",
-						"type": "Expression"
-					}
+					"url": "https://prod-28.uksouth.logic.azure.com:443/workflows/1a08c105cb3549e985d238050858015b/triggers/request/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Frequest%2Frun&sv=1.0&sig=EQNWCkT0ZGF_U97O5RFlImQFt5N6Z1MCn4K3i0rV8_E",
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "POST"
 				}
 			}
 		],
