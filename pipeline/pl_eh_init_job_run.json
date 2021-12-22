@@ -352,7 +352,8 @@
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
 					},
-					"method": "POST"
+					"method": "POST",
+					"body": "body"
 				}
 			}
 		],
