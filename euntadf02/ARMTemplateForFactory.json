@@ -4899,7 +4899,9 @@
 							},
 							"method": "POST",
 							"headers": {},
-							"body": "body"
+							"body": {
+								"body": "enable"
+							}
 						}
 					}
 				],
