@@ -9,7 +9,7 @@
 					{
 						"activity": "enable logic app",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
