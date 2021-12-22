@@ -9,7 +9,7 @@
 					{
 						"activity": "enable logic app",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
@@ -353,7 +353,9 @@
 						"type": "IntegrationRuntimeReference"
 					},
 					"method": "POST",
-					"body": "body"
+					"body": {
+						"body": "enable"
+					}
 				}
 			}
 		],
