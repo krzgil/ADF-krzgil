@@ -211,26 +211,6 @@
 									}
 								]
 							}
-						},
-						{
-							"name": "test condition in until",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Check if events exist",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "test4",
-								"value": {
-									"value": "@greater(int(activity('Check event count in loop').output.firstRow.event_count),0)",
-									"type": "Expression"
-								}
-							}
 						}
 					],
 					"timeout": "0.00:10:00"
