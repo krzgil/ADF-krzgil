@@ -2,8 +2,18 @@
 	"name": "daily_load_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
-		"pipelines": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_init_job_run",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"par_restart_job": 0
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
