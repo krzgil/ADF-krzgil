@@ -32,7 +32,7 @@
 		"conn_snowflake3_connectionString": {
 			"value": ""
 		},
-		"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
+		"daily_load_trigger_properties_pl_init_job_run_parameters_par_restart_job": {
 			"value": 0
 		},
 		"eundadf01-kv-pep_properties_privateLinkResourceId": {

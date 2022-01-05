@@ -7,7 +7,7 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "euntadf02"
 		},
-		"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
+		"daily_load_trigger_properties_pl_init_job_run_parameters_par_restart_job": {
 			"type": "int",
 			"defaultValue": 0
 		}
@@ -938,7 +938,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_eh_init_job_run')]",
+			"name": "[concat(parameters('factoryName'), '/pl_init_job_run')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2418,15 +2418,15 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "pl_eh_init_job_run",
+							"referenceName": "pl_init_job_run",
 							"type": "PipelineReference"
 						},
 						"parameters": {
-							"par_restart_job": "[parameters('daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job')]"
+							"par_restart_job": "[parameters('daily_load_trigger_properties_pl_init_job_run_parameters_par_restart_job')]"
 						}
 					}
 				],
@@ -2441,7 +2441,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_eh_init_job_run')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_init_job_run')]"
 			]
 		},
 		{

@@ -43,7 +43,7 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'conn_snowflake3'"
 		},
-		"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
+		"daily_load_trigger_properties_pl_init_job_run_parameters_par_restart_job": {
 			"type": "int",
 			"defaultValue": 0
 		},
@@ -187,8 +187,8 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job": {
-						"value": "[parameters('daily_load_trigger_properties_pl_eh_init_job_run_parameters_par_restart_job')]"
+					"daily_load_trigger_properties_pl_init_job_run_parameters_par_restart_job": {
+						"value": "[parameters('daily_load_trigger_properties_pl_init_job_run_parameters_par_restart_job')]"
 					}
 				}
 			},
