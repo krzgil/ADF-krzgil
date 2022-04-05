@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "exec pipeline",
+				"name": "dynamic pipeline execution",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
@@ -15,13 +15,12 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/ iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/pl_test1?api-version=2018-06-01",
+					"url": "https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/ iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/pl_test1?api-version=2018-06-01https://management.azure.com",
 					"connectVia": {
 						"referenceName": "integrationRuntime2",
 						"type": "IntegrationRuntimeReference"
 					},
 					"method": "GET",
-					"disableCertValidation": true,
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://management.azure.com"
