@@ -3,12 +3,12 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Fail1",
+				"name": "Fail2",
 				"type": "Fail",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"message": "\"pl_test1 executed\"",
+					"message": "\"pl_test2 executed\"",
 					"errorCode": "9999"
 				}
 			}
