@@ -357,6 +357,36 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_test3')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "var3",
+							"value": "qwe"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"var3": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -590,13 +620,19 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"url": "https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/ iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/pl_test1?api-version=2018-06-01https://management.azure.com",
+							"url": {
+								"value": "@string(concat('https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/',pipeline().parameters.pipeline_name,'?api-version=2018-06-01'))",
+								"type": "Expression"
+							},
 							"connectVia": {
 								"referenceName": "integrationRuntime2",
 								"type": "IntegrationRuntimeReference"
 							},
-							"method": "GET",
+							"method": "PUT",
 							"headers": {},
+							"body": {
+								"test": " test"
+							},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://management.azure.com"
@@ -607,6 +643,12 @@
 				"policy": {
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
+				},
+				"parameters": {
+					"pipeline_name": {
+						"type": "string",
+						"defaultValue": "pl_test1"
+					}
 				},
 				"annotations": []
 			},
@@ -653,60 +695,6 @@
 						}
 					}
 				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_archive_file')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "conn_adfstore01",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"par_container_name": {
-						"type": "string"
-					},
-					"par_folder_name": {
-						"type": "string"
-					},
-					"par_file_name": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().par_file_name",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().par_folder_name",
-							"type": "Expression"
-						},
-						"container": {
-							"value": "@dataset().par_container_name",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "\"Company\"|\"Discount Scheme\"|\"Discount Scheme Description\"|\"Date Created\"|\"Created By\"|\"Date Changed\"|\"Changed By\"|\"Data Extract Date\"",
-						"type": "String"
-					}
-				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/conn_adfstore01')]"
