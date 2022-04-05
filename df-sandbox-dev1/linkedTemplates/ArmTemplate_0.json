@@ -621,18 +621,16 @@
 						"userProperties": [],
 						"typeProperties": {
 							"url": {
-								"value": "@string(concat('https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/',string(pipeline().parameters.pipeline_name),'?api-version=2018-06-01'))",
+								"value": "@concat('https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/',string(pipeline().parameters.pipeline_name),'?api-version=2018-06-01')",
 								"type": "Expression"
 							},
 							"connectVia": {
 								"referenceName": "integrationRuntime2",
 								"type": "IntegrationRuntimeReference"
 							},
-							"method": "PUT",
+							"method": "POST",
 							"headers": {},
-							"body": {
-								"test": " test"
-							},
+							"body": "{ test : \"test\" }",
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://management.azure.com"
