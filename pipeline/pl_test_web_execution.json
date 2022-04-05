@@ -24,9 +24,7 @@
 						"type": "IntegrationRuntimeReference"
 					},
 					"method": "POST",
-					"body": {
-						"test": "test"
-					},
+					"body": "{ test : \"test\" }",
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://management.azure.com"
