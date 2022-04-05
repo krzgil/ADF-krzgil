@@ -1,0 +1,131 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "df-sandbox-dev1"
+		},
+		"conn_adfframework_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_adfframework'"
+		},
+		"conn_adfstore01_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_adfstore01'"
+		},
+		"conn_blob1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_blob1'"
+		},
+		"conn_blob2_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'conn_blob2'"
+		},
+		"conn_sql_framework_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_sql_framework'"
+		},
+		"conn_blob2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://test3hierarchical.dfs.core.windows.net"
+		},
+		"conn_snowflake_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'conn_snowflake'"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "df-sandbox-dev1_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"conn_adfframework_connectionString": {
+						"value": "[parameters('conn_adfframework_connectionString')]"
+					},
+					"conn_adfstore01_connectionString": {
+						"value": "[parameters('conn_adfstore01_connectionString')]"
+					},
+					"conn_blob1_connectionString": {
+						"value": "[parameters('conn_blob1_connectionString')]"
+					},
+					"conn_blob2_accountKey": {
+						"value": "[parameters('conn_blob2_accountKey')]"
+					},
+					"conn_sql_framework_connectionString": {
+						"value": "[parameters('conn_sql_framework_connectionString')]"
+					},
+					"conn_blob2_properties_typeProperties_url": {
+						"value": "[parameters('conn_blob2_properties_typeProperties_url')]"
+					},
+					"conn_snowflake_connectionString": {
+						"value": "[parameters('conn_snowflake_connectionString')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "df-sandbox-dev1_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'df-sandbox-dev1_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "df-sandbox-dev1_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'df-sandbox-dev1_ArmTemplate_1')]"
+			]
+		}
+	]
+}

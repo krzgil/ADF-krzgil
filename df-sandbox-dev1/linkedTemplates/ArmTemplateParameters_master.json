@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "df-sandbox-dev1"
+		},
+		"conn_adfframework_connectionString": {
+			"value": ""
+		},
+		"conn_adfstore01_connectionString": {
+			"value": ""
+		},
+		"conn_blob1_connectionString": {
+			"value": ""
+		},
+		"conn_blob2_accountKey": {
+			"value": ""
+		},
+		"conn_sql_framework_connectionString": {
+			"value": ""
+		},
+		"conn_blob2_properties_typeProperties_url": {
+			"value": "https://test3hierarchical.dfs.core.windows.net"
+		},
+		"conn_snowflake_connectionString": {
+			"value": ""
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
