@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "dynamic pipeline execution",
+				"name": "exec pipeline",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
@@ -20,7 +20,12 @@
 						"referenceName": "integrationRuntime2",
 						"type": "IntegrationRuntimeReference"
 					},
-					"method": "GET"
+					"method": "GET",
+					"disableCertValidation": true,
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://management.azure.com"
+					}
 				}
 			}
 		],
