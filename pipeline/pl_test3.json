@@ -1,0 +1,18 @@
+{
+	"name": "pl_test3",
+	"properties": {
+		"activities": [
+			{
+				"name": "Fail2",
+				"type": "Fail",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"message": "\"pl_test2 executed\"",
+					"errorCode": "9999"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
