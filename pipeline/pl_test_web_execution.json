@@ -23,7 +23,7 @@
 						"referenceName": "integrationRuntime2",
 						"type": "IntegrationRuntimeReference"
 					},
-					"method": "PUT",
+					"method": "POST",
 					"body": {
 						"test": " test"
 					},
