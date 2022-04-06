@@ -3,13 +3,12 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set variable1",
-				"type": "SetVariable",
+				"name": "Wait1",
+				"type": "Wait",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "var3",
-					"value": "qwe"
+					"waitTimeInSeconds": 100
 				}
 			}
 		],
