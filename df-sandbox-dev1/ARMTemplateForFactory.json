@@ -4364,6 +4364,36 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_test3')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "var3",
+							"value": "qwe"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"var3": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_test_snowflake_proc')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -4505,7 +4535,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"url": {
-								"value": "@concat('https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/',string(pipeline().parameters.pipeline_name),'?api-version=2018-06-01')",
+								"value": "@concat('https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/',string(pipeline().parameters.pipeline_name),'/CreateRun?api-version=2018-06-01')",
 								"type": "Expression"
 							},
 							"connectVia": {
@@ -4515,6 +4545,61 @@
 							"method": "POST",
 							"headers": {},
 							"body": "{ test : \"test\" }",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"pipeline_name": {
+						"type": "string",
+						"defaultValue": "pl_test1"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_test_web_get')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dynamic pipeline execution",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": {
+								"value": "@string(concat('https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/',string(pipeline().parameters.pipeline_name),'?api-version=2018-06-01'))",
+								"type": "Expression"
+							},
+							"connectVia": {
+								"referenceName": "integrationRuntime2",
+								"type": "IntegrationRuntimeReference"
+							},
+							"method": "GET",
+							"headers": {},
+							"body": {
+								"test": " test"
+							},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://management.azure.com"
@@ -5581,19 +5666,18 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_test3')]",
+			"name": "[concat(parameters('factoryName'), '/pl_test4')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Set variable1",
-						"type": "SetVariable",
+						"name": "Wait1",
+						"type": "Wait",
 						"dependsOn": [],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "var3",
-							"value": "qwe"
+							"waitTimeInSeconds": 100
 						}
 					}
 				],
@@ -5609,61 +5693,6 @@
 				"annotations": []
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_test_web_get')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dynamic pipeline execution",
-						"type": "WebActivity",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": {
-								"value": "@string(concat('https://management.azure.com/subscriptions/f6f3a04c-f834-4a41-99a6-5a373ca539ae/resourceGroups/iduk-sandbox-rg/providers/Microsoft.DataFactory/factories/df-sandbox-dev1/pipelines/',string(pipeline().parameters.pipeline_name),'?api-version=2018-06-01'))",
-								"type": "Expression"
-							},
-							"connectVia": {
-								"referenceName": "integrationRuntime2",
-								"type": "IntegrationRuntimeReference"
-							},
-							"method": "GET",
-							"headers": {},
-							"body": {
-								"test": " test"
-							},
-							"authentication": {
-								"type": "MSI",
-								"resource": "https://management.azure.com"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"pipeline_name": {
-						"type": "string",
-						"defaultValue": "pl_test1"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime2')]"
-			]
 		}
 	]
 }
