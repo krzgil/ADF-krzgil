@@ -1,0 +1,23 @@
+{
+	"name": "pl_test4",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "var3",
+					"value": "qwe"
+				}
+			}
+		],
+		"variables": {
+			"var3": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
